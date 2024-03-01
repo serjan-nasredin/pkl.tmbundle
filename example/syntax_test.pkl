@@ -1,0 +1,697 @@
+// Source: https://github.com/apple/pkl-jvm-examples/tree/main/pkldoc
+
+//===----------------------------------------------------------------------===//
+
+/*
+  Multiline
+  comment
+*/
+
+
+*/
+
+num1 = 123
+num2 = 0x012AFF 
+num3 = 0b00010111 
+num4 = 0o755 
+
+
+num1 = 1_000_000 
+num2 = 0x0134_64DE 
+num3 = 0b0001_0111 
+num4 = 0o0134_6475 
+
+
+comparison1 = 5 == 2
+comparison2 = 5 < 2
+comparison3 = 5 > 2
+comparison4 = 5 <= 2
+comparison5 = 5 >= 2
+
+num1 = 5 + 2   
+num2 = 5 - 2   
+num3 = 5 * 2   
+num4 = 5 / 2   
+num5 = 5 ~/ 2  
+num6 = 5 % 2   
+num7 = 5 ** 2  
+
+
+clientPort: UInt16
+serverPort: Int(isBetween(0, 1023))
+
+num1 = .23
+num2 = 1.23
+num3 = 1.23e2 
+num4 = 1.23e-2 
+
+
+notANumber = NaN
+positiveInfinity = Infinity
+negativeInfinity = -Infinity
+
+x: Float(isFinite)
+
+x: Float(isBetween(0, 10e6))
+
+
+res1 = true && false 
+res2 = true || false 
+res3 = !false 
+res4 = true.xor(false) 
+res5 = true.implies(false) 
+
+"""
+\t - tab
+
+\n - line feed
+
+\r - carriage return
+
+\" - verbatim quote
+
+\\ - verbatim backslash
+"""
+
+
+""\u{26} \u{E9} \u{1F600}" "
+
+"\u{26} \u{E9} \u{1F600}" 
+
+
+name = "Dodo"
+greeting = "Hi, \(name)!" 
+
+x = 42
+str = "\(x + 2) plus \(x * 2) is \(0x80)" 
+
+"""
+Although the Dodo is extinct,
+the species will be remembered.
+"""
+
+
+bird = "Dodo"
+message = """
+Although the \(bird) is extinct,
+the species will be remembered.
+"""
+
+bird = "Dodo"
+str = #" \\\\\ \#n \#u{12AF} \#(bird) """"" "#"
+
+strLength = "dodo".length 
+reversedStr = "dodo".reverse() 
+hasAx = "dodo".contains("alive") 
+trimmed = "  dodo  ".trim() 
+
+
+duration1 = 5.ns  // nanoseconds (smallest unit)
+duration2 = 5.us  // microseconds
+duration3 = 5.ms  // milliseconds
+duration4 = 5.s   // seconds
+duration5 = 5.min // minutes
+duration6 = 5.h   // hours
+duration7 = 3.d   // days (largest unit)
+
+comparison1 = 5.min == 3.s
+comparison2 = 5.min < 3.s
+comparison3 = 5.min > 3.s
+comparison4 = 5.min <= 3.s
+comparison5 = 5.min >= 3.s
+
+
+res1 = 5.min + 3.s    
+res2 = 5.min - 3.s    
+res3 = 5.min * 3      
+res4 = 5.min / 3      
+res5 = 5.min / 3.min  
+res6 = 5.min ~/ 3     
+res7 = 5.min ~/ 3.min 
+res8 = 5.min % 3      
+res9 = 5.min ** 3     
+
+
+  result: 5.05.min
+result: 4.95.min
+result: 15.min
+result: 1.6666666666666667.min
+result: 1.6666666666666667
+result: 1.min
+result: 1
+result: 2.min
+result: 125.min
+
+x = 5
+xMinutes = x.min 
+y = 3
+xySeconds = (x + y).s 
+
+datasize1 = 5.b  // bytes (smallest unit)
+datasize2 = 5.kb // kilobytes
+datasize3 = 5.mb // megabytes
+datasize4 = 5.gb // gigabytes
+datasize5 = 5.tb // terabytes
+datasize6 = 5.pb // petabytes (largest unit)
+
+datasize1 = 5.b   // bytes (smallest unit)
+datasize2 = 5.kib // kibibytes
+datasize3 = 5.mib // mebibytes
+datasize4 = 5.gib // gibibytes
+datasize5 = 5.tib // tebibytes
+datasize6 = 5.pib // pebibytes (largest unit)
+
+comparison1 = 5.mb == 3.kib
+comparison2 = 5.mb < 3.kib
+comparison3 = 5.mb > 3.kib
+comparison4 = 5.mb <= 3.kib
+comparison5 = 5.mb >= 3.kib
+
+res1 = 5.mb + 3.kib 
+res2 = 5.mb - 3.kib 
+res3 = 5.mb * 3     
+res4 = 5.mb / 3     
+res5 = 5.mb / 3.mb  
+res6 = 5.mb ~/ 3    
+res7 = 5.mb ~/ 3.mb 
+res8 = 5.mb % 3     
+res9 = 5.mb ** 3    
+
+  result: 5.003072.mb
+result: 4.996928.mb
+result: 15.mb
+result: 1.6666666666666667.mb
+result: 1.6666666666666667
+result: 1.mb
+result: 1
+result: 2.mb
+result: 125.mb
+
+x = 5
+xMegabytes = x.mb 
+y = 3
+xyKibibytes = (x + y).kib 
+
+dodo {
+  name = "Dodo"
+  taxonomy { 
+    `class` = "Aves" 
+  }
+}
+
+tortoise = (dodo) { 
+  name = "Galápagos tortoise"
+  taxonomy { 
+    `class` = "Reptilia" 
+  }
+}
+
+penguin {
+  eggIncubation = 40.d
+  adultWeightInGrams = eggIncubation.value * 100 
+}
+adultWeightInGrams = penguin.adultWeightInGrams
+
+class Bird { 
+  name: String
+  lifespan: Int
+  migratory: Boolean
+}
+
+pigeon = new Bird { 
+  name = "Pigeon"
+  lifespan = 8
+  migratory = false
+}
+
+faultyPigeon2 = new Bird {
+  name = 3.min
+  lifespan = 8
+}
+
+class Bird {
+  name: String
+  lifespan: Int
+}
+
+pigeon = new Dynamic { 
+  name = "Pigeon"
+  lifespan = 8
+}.toTyped(Bird)
+
+class Bird {
+  name: String
+  lifespan: Int
+  hidden nameAndLifespanInIndex = "\(name), \(lifespan)" 
+  nameSignWidth: UInt = nameAndLifespanInIndex.length 
+}
+
+pigeon = new Bird { 
+  name = "Pigeon"
+  lifespan = 8
+}
+
+pigeonInIndex = pigeon.nameAndLifespanInIndex 
+
+pigeonDynamic = pigeon.toDynamic() 
+
+
+pigeonName: String = "Pigeon"
+
+const function birdLifespan(i: Int): Int = (i / 4).toInt()
+
+class Bird {
+  name: String
+  lifespan: Int
+}
+
+const bird: Bird = new {
+  name = pigeonName 
+  lifespan = birdLifespan(24) 
+}
+
+pigeonName: String = "Pigeon"
+
+class Bird {
+  name: String = pigeonName 
+}
+
+@Deprecated { message = "Replace with \(pigeonName)" } 
+oldPigeonName: String
+
+/// Animals are living creatures inhabiting the planet Earth.
+amends "pkl:DocPackageInfo"
+
+name = "animal"
+version = "1.2.3"
+importUri = "modulepath:/animal/"
+authors {
+  "zoologist@example.com"
+}
+sourceCode = "https://www.example.com/my/source"
+issueTracker = "https://www.example.com/my/issues"
+
+open class Pigeon {   
+  name = "Pigeon"
+  diet = "Seeds"
+}
+
+class Parrot extends Pigeon {   
+  name = "Parrot"               
+  diet = "Berries"              
+  extinct = false               
+
+  function say() = "Pkl is great!"   
+}
+
+module parrot
+
+extends "pigeon.pkl"
+
+import "other.pkl"
+
+name = "Parrot"
+diet = "Berries"
+extinct = false
+
+function say() = "Pkl is great!"
+
+
+import "modules/pigeon.pkl" // relative to current module
+
+name = pigeon.name
+
+module birds
+
+pigeon = import("pigeon.pkl")
+parrot = import("parrot.pkl")
+
+import* "birds/*.pkl" as allBirds 
+import* "reptiles/*.pkl" 
+
+birds = import*("birds/*.pkl") 
+
+birds = new Mapping {
+  ["birds/pigeon.pkl"] = import("birds/pigeon.pkl")
+  ["birds/parrot.pkl"] = import("birds/parrot.pkl")
+  ["birds/falcon.pkl"] = import("birds/falcon.pkl")
+}
+
+
+a = 10
+b {
+  c = 20
+}
+
+a: 10
+b:
+  c: 20
+
+
+a = 10
+b {
+  c = 20
+}
+output {
+  value = b // defaults to `outer`, which is the entire module
+}
+
+a = 10
+b {
+  c = 20
+}
+
+output {
+  renderer = new YamlRenderer {}
+}
+
+quota {
+  memory = 100.mb
+  disk = 20.gb
+}
+
+output {
+  renderer = new YamlRenderer {
+    converters {
+      [DataSize] = (size) -> "\(size.value) \(size.unit)"
+    }
+  }
+}
+
+output {
+  renderer = new YamlRenderer {
+    converters {
+      ["quota.memory"] = (size) -> "\(size.value) \(size.unit)"
+      ["quota.disk"] = (size) -> "\(size.value) \(size.unit)"
+    }
+  }
+}
+
+pigeon {
+  name = "Pigeon"
+  diet = "Seeds"
+}
+parrot {
+  name = "Parrot"
+  diet = "Seeds"
+}
+output {
+  files {
+    ["birds/pigeon.json"] {
+      value = pigeon
+      renderer = new JsonRenderer {}
+    }
+    ["birds/parrot.yaml"] {
+      value = parrot
+      renderer = new YamlRenderer {}
+    }
+  }
+}
+
+name = "Pigeon"
+diet = "Seeds"
+output {
+  renderer = new JsonRenderer {}
+}
+
+
+
+import "pigeon.pkl"
+import "parrot.pkl"
+
+output {
+  files {
+    ["birds/pigeon.\(pigeon.output.renderer.extension)"] = pigeon.output
+    ["birds/parrot.\(parrot.output.renderer.extension)"] = parrot.output
+  }
+}
+
+name = "Pigeon"
+nameNonNull = name!!  
+
+name2 = null
+name2NonNull = name2!!
+
+name = "Pigeon"
+nameOrParrot = name ?? "Parrot"  
+
+name2 = null
+name2OrParrot = name2 ?? "Parrot"
+
+name = "Pigeon"
+nameLength = name?.length          
+nameUpper = name?.toUpperCase()    
+
+name2 = null
+name2Length = name2?.length        
+name2Upper = name2?.toUpperCase()
+
+name = null
+nameLength = name?.length ?? 0
+
+name = "Pigeon"
+nameWithTitle = name.ifNonNull((it) -> "Dr." + it)  
+
+name2 = null
+name2WithTitle = name2.ifNonNull((it) -> "Dr." + it)
+
+num = if (2 + 2 == 5) 1984 else 42 
+
+path = read("env:PATH")
+
+port = read?("env:PORT")?.toInt() ?? 1234
+
+birdFiles = read*("birds/*.pkl")
+
+birdFiles = new Mapping {
+  ["birds/pigeon.pkl"] = read("birds/pigeon.pkl")
+  ["birds/parrot.pkl"] = read("birds/parrot.pkl")
+  ["birds/falcon.pkl"] = read("birds/falcon.pkl")
+}
+
+myValue = throw("You won't be able to recover from this one!")
+
+birdDiets = let (birds = List("Pigeon", "Barn owl", "Parrot"))
+let (diet = List("Seeds", "Mice", "Berries"))
+birds.zip(diet)
+
+birdDiets = let (diets = List("Seeds", "Berries", "Mice"))
+List(diets[2], diets[0])
+
+
+test1 = 42 is Int
+test2 = 42 is Number
+test3 = 42 is Any
+test4 = !(42 is String)
+
+open class Base
+class Derived extends Base
+
+base = new Base {}
+
+test5 = base is Base
+test6 = base is Any
+test7 = !(base is Derived)
+
+derived = new Derived {}
+
+test8 = derived is Derived
+test9 = derived is Base
+test10 = derived is Any
+
+test1 = email is String(contains("@")) 
+test2 = map is Map<Int, Base> 
+test3 = name is "Pigeon"|"Barn owl"|"Parrot"
+
+birds {
+  new { name = "Pigeon" }
+  new { name = "Barn owl" }
+}
+names = birds.toList().map((it) -> it.name) as List<String>
+
+class Bird {
+  name: String 
+}
+bird: Bird
+
+
+amends "bird.pkl"
+
+name = "Pigeon"
+lifespan = 8
+friends {
+  import("falcon.pkl") 
+}
+
+
+class Bird { name: String }
+
+bird1: String|Bird = "Pigeon"
+bird2: String|Bird = new Bird { name = "Pigeon" }
+
+function TODO(): nothing = throw("TODO")
+
+lifespan = 42 
+map: Map 
+function say(name) = name 
+
+class Bird
+
+coll: Collection<Bird>         // = List() 
+list: List<Bird>               // = List() 
+set: Set<Bird>                 // = Set() 
+map: Map<String, Bird>         // = Map() 
+listing: Listing<Bird>         // = new Listing { default = (index) -> new Bird {} } 
+mapping: Mapping<String, Bird> // = new Mapping { default = (key) -> new Bird {} } 
+obj: Bird                      // = new Bird {} 
+nullable: Bird?                // = Null(new Bird {}) 
+union: *Bird|String            // = new Bird {} 
+stringLiteral: "Pigeon"        // = "Pigeon" 
+nullish: Null                  // = null 
+
+
+
+class Bird {
+  name: String(length >= 3)     //  
+  parent: String(this != name)  //  
+}
+
+pigeon: Bird = new {
+  name = "Pigeon"
+  parent = "Pigeon Sr." 
+}
+
+
+isSinger = true
+
+parrot {
+  lifespan = 20
+  when (isSinger) {
+    hobby = "singing"
+    idol = "Frank Sinatra"
+  }
+}
+
+
+names = List("Pigeon", "Barn owl", "Parrot")
+
+birds {
+  for (_name in names) {
+    new {
+      name = _name
+      lifespan = 42
+    }
+  }
+}
+
+namesAndLifespans = Map("Pigeon", 8, "Barn owl", 15, "Parrot", 20)
+
+birdsByName {
+  for (_name, _lifespan in namesAndLifespans) {
+    [_name] {
+      name = _name
+      lifespan = _lifespan
+    }
+  }
+}
+
+entries1 {
+  ["Pigeon"] = "Piggy the Pigeon"
+  ["Barn owl"] = "Barney the Barn owl"
+}
+
+entries2 {
+  ...entries1 
+}
+
+elements1 { 1; 2 }
+
+elements2 {
+  ...elements1 
+}
+
+properties1 {
+  name = "Pigeon"
+  diet = "Seeds"
+}
+
+properties2 {
+  ...properties1 
+}
+
+
+
+environmentVariables {   
+  new { name = "PIGEON"; value = "pigeon-value" }
+  new { name = "PARROT"; value = "parrot-value" }
+  new { name = "BARN OWL"; value = "barn-owl-value" }
+}
+
+updated = (environmentVariables) {
+  [[name == "PARROT"]] { 
+    value = "new-value"  
+  }
+}
+
+`A Bird's First Flight Time` = 5.s
+
+`number` = 42 
+res1 = `number` 
+res2 = number 
+
+/// An aviated animal going by the name of [bird](https://en.wikipedia.org/wiki/Bird).
+///
+/// These animals live on the planet Earth.
+module com.animals.Birds
+
+/// A bird living on Earth.
+///
+/// Has [name] and [lifespan] properties and an [isOlderThan()] method.
+class Bird {
+  /// The name of this bird.
+  name: String
+
+  /// The lifespan of this bird.
+  lifespan: UInt8
+
+  /// Tells if this bird is older than [bird].
+  function isOlderThan(bird: Bird): Boolean = lifespan > bird.lifespan
+}
+
+/// An adult [Bird].
+typealias Adult = Bird(lifespan >= 2)
+
+/// A common [Bird] found in large cities.
+pigeon: Bird = new {
+  name = "Pigeon"
+  lifespan = 8
+}
+
+/// Creates a [Bird] with the given [_name] and lifespan `0`.
+function Infant(_name: String): Bird = new { name = _name; lifespan = 0 }
+
+@Unlisted
+
+birds = List("Robin", "Swallow", "Eagle", "Falcon")
+indexes = birds.mapIndexed((i, _) -> i)
+
+function constantly(_, second) = second
+
+name = let (_ = trace("defining name")) "Eagle"
+
+birds = new Dynamic {
+  default { _ ->
+    species = "Bird"
+  }
+  ["Falcon"] {}
+  ["Eagle"] {}
+}
+
+amends "pkl:Project"
+
+package {
+  name = "mypackage" 
+  baseUri = "package://example.com/\(name)" 
+  version = "1.0.0" 
+  packageZipUrl = "https://example.com/\(name)/\(name)@\(version).zip" 
+}
