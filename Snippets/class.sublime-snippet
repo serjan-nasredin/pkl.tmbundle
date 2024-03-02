@@ -1,11 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-  <key>prefix</key>
-  <string>class</string>
-  <key>body</key>
-  <string>class ${1:className} {
-}</string>
-</dict>
-</plist>
+<snippet>
+  <content><![CDATA[class ${1:Name} {${2/.+/\n\t\/* /}${2:doc-string for $1}${2/.+/ *\/\n/}}]]></content>
+  <tabTrigger>class</tabTrigger>
+  <scope>source.pkl - meta.function.parameters - meta.function-call - meta.statement - meta.mapping - meta.sequence - meta.set - comment - string</scope>
+  <description>New Class</description>
+</snippet>

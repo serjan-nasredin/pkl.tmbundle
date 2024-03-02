@@ -1,0 +1,186 @@
+%YAML 1.2
+---
+# Syntax: sublimetext.com/docs/syntax.html
+# Documentation: docs.toit.io/language
+
+name: Pkl
+file_extensions:
+  - pkl
+  - pcf
+scope: source.pkl
+
+contexts:
+  main:
+    - include: comment-single-line
+    - include: comment-multi-line
+    - include: string-double
+    - include: keyword
+    - include: class
+    - include: literal
+    - include: number
+    - include: built-in
+    - include: string-quoted
+    - include: super
+    - include: type
+    - include: operator
+    - include: method
+    - include: all
+
+  comment-single-line:
+    - match: //
+      scope: punctuation.definition.comment.pkl
+      push:
+        - meta_scope: comment.line.pkl
+        - match: $\n?
+          pop: true
+
+  comment-multi-line:
+    - match: /\*
+      scope: punctuation.definition.comment.begin.toit
+      push:
+        - meta_scope: comment.block.toit
+        - match: \*/
+          scope: punctuation.definition.comment.end.toit
+          pop: true
+        - match: '^\s*(\*)(?!/)'
+          captures:
+            0: punctuation.definition.comment.toit
+    - include: comment-error
+
+  comment-error:
+    - match: \*/
+      scope: invalid.illegal.toit
+
+  string-double:
+    - match: '"'
+      scope: punctuation.definition.string.begin.pkl
+      push:
+        - include: variable-string
+        - include: number
+        - meta_scope: string.quoted.double.pkl
+        - match: \\.
+          scope: constant.character.escape.pkl
+        - match: '"'
+          scope: punctuation.definition.string.end.pkl
+          pop: true
+
+  string-quoted:
+    - match: \`
+      scope: punctuation.definition.string.begin.pkl
+      push:
+        - meta_scope: string.quoted.double.pkl
+        - match: \\.
+          scope: constant.character.escape.pkl
+        - match: \`
+          scope: punctuation.definition.string.end.pkl
+          pop: true
+
+  variable-string:
+    - match: (\\\()([\w.])*(\))
+      scope: constant.variable.pkl
+
+  all:
+    - match: ([_\w]+)\s*([=:{])
+      captures:
+        0: meta.pkl
+        1: variable.pkl
+        2: keyword.operator.assignment
+
+  number:
+    - match: (?:(?:[-]?)(?:[0-9e]*)(?:\.{1}){1}(?:[0-9e]+))
+      scope: constant.numeric.float.decimal.pkl
+    - match: \b(?:0[xXbBoO])(?:[_0-9a-fA-F]+)
+      scope: constant.numeric.hex.pkl
+    - match: \b(?:[-]?)(?:[0-9_]+)
+      scope: constant.numeric.integer.decimal.pkl
+
+  built-in:
+    - match: \b(JsonRenderer|YamlRenderer)\b
+      scope: support.class.toit
+
+  operator:
+    - match: '([+*/%-:&|^]|<<|>>>?)='
+      scope: keyword.operator.assignment
+    - match: '[+*/%-]'
+      scope: keyword.operator.arithmetic
+    - match: '\!|\&\&|\|\|'
+      scope: keyword.operator.logical
+    - match: '[~&|^]|<<|>>>?'
+      scope: keyword.operator.bitwise
+
+  punctuation:
+    - match: \.
+      scope: punctuation.delimiter.period.dot.pkl
+    - match: \,
+      scope: punctuation.delimiter.comma.pkl
+    - match: \;
+      scope: punctuation.definition.other.semicolon.pkl
+    - match: ':'
+      scope: punctuation.separator.key-value.colon.pkl
+    - match: \(
+      scope: punctuation.section.parens.begin.pkl
+    - match: \)
+      scope: punctuation.section.parens.end.pkl
+    - match: \[
+      scope: punctuation.section.brackets.begin.pkl
+    - match: \]
+      scope: punctuation.section.brackets.end.pkl
+    - match: \?
+      scope: punctuation.definition.other.questionmark.pkl
+      # =
+      # <
+      # >
+      # /
+      # +
+      # {
+      # }
+      # ->
+
+  literal:
+    - match: \b(true|false)\b
+      scope: constant.language.boolean.pkl
+    - match: \b(null)\b
+      scope: constant.language.nan.pkl
+
+  super:
+    - match: \@(\w+)
+      scope: keyword.pkl
+
+  type:
+    - match: \b(Int|String|Boolean|Float)\b
+      scope: storage.type.pkl
+    - match: \b(UInt16|UInt8|UInt)\b
+      scope: storage.type.pkl
+
+  keyword:
+    - match: \b(let|function|protected|override|record|delete|match|vararg)\b
+      scope: keyword.pkl
+    - match: \b(if|else|for|when|switch|case)\b
+      scope: keyword.control.conditional.pkl
+    - match: \b(import|module|amends)\b
+      scope: keyword.control.import.pkl
+    - match: \b(is|as|in)\b
+      scope: keyword.import.from.pkl
+    - match: \b(const)\b
+      scope: storage.modifier.toit
+    - match: \b(class|extends|new)\b
+      scope: keyword.pkl
+
+  method:
+    - match: '^(?:(const|))(?:(function|))\s+([A-Za-z0-9]{1,}(\(\)){1})'
+      captures:
+        0: meta.function.pkl
+        1: storage.modifier.pkl
+        2: keyword.pkl
+        3: entity.name.function.toit
+        4: punctuation.section.parens.begin.pkl
+
+  class:
+    - match: '^(?:(open|))\s*(class)?\s+([A-Za-z0-9]{1,})(?:\s*(extends|))(?:\s*([A-Za-z0-9]{1,}|)):?$\n?'
+      captures:
+        0: meta.class.pkl
+        1: keyword
+        2: keyword.declaration.class.pkl
+        3: support.class.pkl
+        4: keyword
+        5: support.class.pkl
