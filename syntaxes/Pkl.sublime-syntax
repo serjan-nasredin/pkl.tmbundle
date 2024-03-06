@@ -1,7 +1,6 @@
 %YAML 1.2
 ---
 # Syntax: sublimetext.com/docs/syntax.html
-# Documentation: docs.toit.io/language
 
 name: Pkl
 file_extensions:
@@ -36,20 +35,20 @@ contexts:
 
   comment-multi-line:
     - match: /\*
-      scope: punctuation.definition.comment.begin.toit
+      scope: punctuation.definition.comment.begin.pkl
       push:
-        - meta_scope: comment.block.toit
+        - meta_scope: comment.block.pkl
         - match: \*/
-          scope: punctuation.definition.comment.end.toit
+          scope: punctuation.definition.comment.end.pkl
           pop: true
         - match: '^\s*(\*)(?!/)'
           captures:
-            0: punctuation.definition.comment.toit
+            0: punctuation.definition.comment.pkl
     - include: comment-error
 
   comment-error:
     - match: \*/
-      scope: invalid.illegal.toit
+      scope: invalid.illegal.pkl
 
   string-double:
     - match: '"'
@@ -96,7 +95,7 @@ contexts:
 
   built-in:
     - match: \b(JsonRenderer|YamlRenderer)\b
-      scope: support.class.toit
+      scope: support.class.pkl
 
   operator:
     - match: '([+*/%-:&|^]|<<|>>>?)='
@@ -172,7 +171,7 @@ contexts:
         0: meta.function.pkl
         1: storage.modifier.pkl
         2: keyword.pkl
-        3: entity.name.function.toit
+        3: entity.name.function.pkl
         4: punctuation.section.parens.begin.pkl
 
   class:
