@@ -3,27 +3,29 @@
 # Syntax: sublimetext.com/docs/syntax.html
 
 name: Pkl
-file_extensions:
-  - pkl
-  - pcf
+file_extensions: [pkl, pcf]
 scope: source.pkl
 
 contexts:
   main:
-    - include: comment-single-line
-    - include: comment-multi-line
+    - include: comments
+    - include: string-quoted-single
     - include: string-double
+    - include: string-block
     - include: keyword
     - include: class
     - include: literal
     - include: number
     - include: built-in
-    - include: string-quoted
     - include: super
     - include: type
     - include: operator
     - include: method
     - include: all
+
+  comments:
+    - include: comment-single-line
+    - include: comment-multi-line
 
   comment-single-line:
     - match: //
@@ -50,33 +52,49 @@ contexts:
     - match: \*/
       scope: invalid.illegal.pkl
 
+
+
+  escape_captures:
+    - match: \\.
+      scope: constant.character.escape.pkl
+
+  string-interpolation:
+    - match: \\\(
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.interpolation.pkl
+        - match: \)
+          scope: punctuation.section.interpolation.end.pkl
+          pop: true
+        - include: main
+
   string-double:
     - match: '"'
-      scope: punctuation.definition.string.begin.pkl
+      scope: string.quoted.double.pkl punctuation.definition.string.begin.pkl
       push:
-        - include: variable-string
-        - include: number
-        - meta_scope: string.quoted.double.pkl
-        - match: \\.
-          scope: constant.character.escape.pkl
+        - meta_content_scope: meta.string.pkl string.quoted.double.pkl
+        - include: string-interpolation
+        - include: escape_captures
         - match: '"'
           scope: punctuation.definition.string.end.pkl
           pop: true
 
+  # string-block:
+  #   - match: '"""'
+  #     scope: string.quoted.triple.pkl punctuation.definition.string.begin.pkl
+  #     push:
+
+
   string-quoted:
     - match: \`
-      scope: punctuation.definition.string.begin.pkl
+      scope: string.quoted.single.pkl punctuation.definition.string.begin.pkl
       push:
-        - meta_scope: string.quoted.double.pkl
-        - match: \\.
-          scope: constant.character.escape.pkl
+        - meta_content_scope: meta.string.pkl string.quoted.single.pkl
         - match: \`
           scope: punctuation.definition.string.end.pkl
           pop: true
-
-  variable-string:
-    - match: (\\\()([\w.])*(\))
-      scope: constant.variable.pkl
+        - include: string-interpolation
+        - include: escape_captures
 
   all:
     - match: ([_\w]+)\s*([=:{])
@@ -88,8 +106,12 @@ contexts:
   number:
     - match: (?:(?:[-]?)(?:[0-9e]*)(?:\.{1}){1}(?:[0-9e]+))
       scope: constant.numeric.float.decimal.pkl
-    - match: \b(?:0[xXbBoO])(?:[_0-9a-fA-F]+)
+    - match: \b(?:0[xX])(?:[_0-9a-fA-F]+)
       scope: constant.numeric.hex.pkl
+    - match: \b(?:0[bB])(?:[_0-9a-fA-F]+)
+      scope: constant.numeric.binary.pkl
+    - match: \b(?:0[oO])(?:[_0-9a-fA-F]+)
+      scope: constant.numeric.octal.pkl
     - match: \b(?:[-]?)(?:[0-9_]+)
       scope: constant.numeric.integer.decimal.pkl
 
@@ -106,6 +128,8 @@ contexts:
       scope: keyword.operator.logical
     - match: '[~&|^]|<<|>>>?'
       scope: keyword.operator.bitwise
+    - match: '==|<|>|<=|>='
+      scope: keyword.operator.comparison
 
   punctuation:
     - match: \.
