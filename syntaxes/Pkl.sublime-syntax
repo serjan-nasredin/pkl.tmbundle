@@ -60,7 +60,6 @@ contexts:
     - match: '\\u\{\h{1,6}\}'
       scope: constant.character.escape.unicode.pkl
 
-
   string-interpolation:
     - match: \\\(
       push:
@@ -119,11 +118,11 @@ contexts:
     - match: (?:(?:[-]?)(?:[0-9e]*)(?:\.{1}){1}(?:[0-9e]+))
       scope: constant.numeric.float.decimal.pkl
     - match: \b(?:0[xX])(?:[_0-9a-fA-F]+)
-      scope: constant.numeric.hex.pkl
+      scope: constant.numeric.integer.hex.pkl
     - match: \b(?:0[bB])(?:[_0-9a-fA-F]+)
-      scope: constant.numeric.binary.pkl
+      scope: constant.numeric.integer.binary.pkl
     - match: \b(?:0[oO])(?:[_0-9a-fA-F]+)
-      scope: constant.numeric.octal.pkl
+      scope: constant.numeric.integer.octal.pkl
     - match: \b(?:[-]?)(?:[0-9_]+)
       scope: constant.numeric.integer.decimal.pkl
 
