@@ -52,11 +52,14 @@ contexts:
     - match: \*/
       scope: invalid.illegal.pkl
 
-
-
-  escape_captures:
-    - match: \\.
+  escaped-char:
+    - match: '\\[\\"''tnr]'
       scope: constant.character.escape.pkl
+
+  escaped-unicode-char:
+    - match: '\\u\{\h{1,6}\}'
+      scope: constant.character.escape.unicode.pkl
+
 
   string-interpolation:
     - match: \\\(
@@ -73,11 +76,12 @@ contexts:
       scope: string.quoted.double.pkl punctuation.definition.string.begin.pkl
       push:
         - meta_content_scope: meta.string.pkl string.quoted.double.pkl
-        - include: string-interpolation
-        - include: escape_captures
         - match: '"'
           scope: punctuation.definition.string.end.pkl
           pop: true
+        - include: string-interpolation
+        - include: escaped-char
+        - include: escaped-unicode-char
 
   string-block:
     - match: '"""'
@@ -88,7 +92,8 @@ contexts:
           scope: punctuation.definition.string.end.pkl
           pop: true
         - include: string-interpolation
-        - include: escape_captures
+        - include: escaped-char
+        - include: escaped-unicode-char
 
 
   string-quoted:
@@ -101,6 +106,7 @@ contexts:
           pop: true
         - include: string-interpolation
         - include: escape_captures
+        - include: escaped-unicode-char
 
   all:
     - match: ([_\w]+)\s*([=:{])
