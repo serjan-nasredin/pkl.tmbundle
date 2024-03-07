@@ -79,15 +79,21 @@ contexts:
           scope: punctuation.definition.string.end.pkl
           pop: true
 
-  # string-block:
-  #   - match: '"""'
-  #     scope: string.quoted.triple.pkl punctuation.definition.string.begin.pkl
-  #     push:
+  string-block:
+    - match: '"""'
+      scope: string.quoted.triple.pkl punctuation.definition.string.begin.pkl
+      push:
+        - meta_content_scope: meta.string.pkl string.quoted.triple.pkl
+        - match: '"""'
+          scope: punctuation.definition.string.end.pkl
+          pop: true
+        - include: string-interpolation
+        - include: escape_captures
 
 
   string-quoted:
     - match: \`
-      scope: string.quoted.single.pkl punctuation.definition.string.begin.pkl
+      scope:  meta.string.pkl string.quoted.single.pkl punctuation.definition.string.begin.pkl
       push:
         - meta_content_scope: meta.string.pkl string.quoted.single.pkl
         - match: \`
