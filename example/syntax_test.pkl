@@ -80,7 +80,7 @@ res5 = true.implies(false)
 
 
 name = "Dodo"
-greeting = "Hi, \(name)!" 
+greeting = "Hi, \(name)!"
 
 x = 42
 str = "\(x + 2) plus \(x * 2) is \(0x80)" 

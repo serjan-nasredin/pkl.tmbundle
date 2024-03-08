@@ -178,7 +178,7 @@ hidden skipIfEmpty = (v: Dynamic|Typed|String) ->
     if (isEmpty) null else v
 
 output {
-  renderer = new PListRenderer {
+  renderer = new YamlRenderer {
     converters {
       [String] = skipIfEmpty
       [Map] = skipIfEmpty

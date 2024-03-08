@@ -6,12 +6,13 @@ name: Pkl
 file_extensions: [pkl, pcf]
 scope: source.pkl
 
+variables:
+  escape-chars: '(?:\\|\\#|\\##|\\###|\\####|\\#####|\\######)'
 contexts:
   main:
     - include: comments
-    - include: string-quoted-single
-    - include: string-double
-    - include: string-block
+    - include: custom-string-1
+    - include: strings
     - include: keyword
     - include: class
     - include: literal
@@ -52,48 +53,118 @@ contexts:
     - match: \*/
       scope: invalid.illegal.pkl
 
+
   escaped-char:
-    - match: '\\[\\"''tnr]'
+    - match: '[\\"tnr]'
       scope: constant.character.escape.pkl
+      pop: true
 
   escaped-unicode-char:
-    - match: '\\u\{\h{1,6}\}'
+    - match: 'u\{\h{1,6}\}'
       scope: constant.character.escape.unicode.pkl
+      pop: true
 
   string-interpolation:
-    - match: \\\(
+    - match: \(
       push:
         - clear_scopes: 1
         - meta_scope: meta.interpolation.pkl
         - match: \)
           scope: punctuation.section.interpolation.end.pkl
-          pop: true
+          pop: 2 # pops both the ( and the {escape}
         - include: main
 
-  string-double:
+  escape-char-0:
+    - match: '\\'
+      scope: constant.character.escape.pkl
+      push:
+        - include: string-interpolation
+        - include: escaped-char
+        - include: escaped-unicode-char
+
+  escape-char-1:
+    - match: '\\#'
+      scope: constant.character.escape.pkl
+      push:
+        - include: string-interpolation
+        - include: escaped-char
+        - include: escaped-unicode-char
+
+  escape-char-2:
+    - match: '\\##'
+      scope: constant.character.escape.pkl
+      push:
+        - include: string-interpolation
+        - include: escaped-char
+        - include: escaped-unicode-char
+
+  strings:
+    - include: string-quoted
+    - include: string-multi-line-2
+    - include: string-single-line-2
+    - include: string-multi-line-1
+    - include: string-single-line-1
+    - include: string-multi-line-0
+    - include: string-single-line-0
+
+  string-single-line-0:
     - match: '"'
-      scope: string.quoted.double.pkl punctuation.definition.string.begin.pkl
+      scope: string.quoted.double.0.pkl punctuation.definition.string.begin.0.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.double.pkl
+        - meta_content_scope: meta.string.pkl string.quoted.double.0.pkl
         - match: '"'
-          scope: punctuation.definition.string.end.pkl
+          scope: punctuation.definition.string.end.0.pkl
           pop: true
-        - include: string-interpolation
-        - include: escaped-char
-        - include: escaped-unicode-char
+        - include: escape-char-0
 
-  string-block:
-    - match: '"""'
-      scope: string.quoted.triple.pkl punctuation.definition.string.begin.pkl
+  string-single-line-1:
+    - match: '#"'
+      scope: string.quoted.double.1.pkl punctuation.definition.string.begin.1.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.triple.pkl
-        - match: '"""'
-          scope: punctuation.definition.string.end.pkl
+        - meta_content_scope: meta.string.pkl string.quoted.double.1.pkl
+        - match: '"#'
+          scope: punctuation.definition.string.end.1.pkl
           pop: true
-        - include: string-interpolation
-        - include: escaped-char
-        - include: escaped-unicode-char
+        - include: escape-char-1
 
+  string-single-line-2:
+  - match: '##"'
+    scope: string.quoted.double.2.pkl punctuation.definition.string.begin.2.pkl
+    push:
+      - meta_content_scope: meta.string.pkl string.quoted.double.2.pkl
+      - match: '"##'
+        scope: punctuation.definition.string.end.2.pkl
+        pop: true
+      - include: escape-char-2
+
+  string-multi-line-0:
+    - match: '(""")\s*?$' # content must start on a new line
+      scope: string.quoted.triple.0.pkl punctuation.definition.string.begin.0.pkl
+      push:
+        - meta_content_scope: meta.string.pkl string.quoted.triple.0.pkl
+        - match: '^\s*?(""")' # closing delim must start on a new line
+          scope: punctuation.definition.string.end.0.pkl
+          pop: true
+        - include: escape-char-0
+
+  string-multi-line-1:
+    - match: '(#""")\s*?$' # content must start on a new line
+      scope: string.quoted.triple.1.pkl punctuation.definition.string.begin.1.pkl
+      push:
+        - meta_content_scope: meta.string.pkl string.quoted.triple.1.pkl
+        - match: '^\s*?("""#)' # closing delim must start on a new line
+          scope: punctuation.definition.string.end.1.pkl
+          pop: true
+        - include: escape-char-1
+  string-multi-line-2:
+    - match: '(##""")\s*?$' # content must start on a new line
+      scope: string.quoted.triple.2.pkl punctuation.definition.string.begin.2.pkl
+      push:
+        - meta_content_scope: meta.string.pkl string.quoted.triple.2.pkl
+        - match: '^\s*?("""##)' # closing delim must start on a new line
+          scope: punctuation.definition.string.end.2.pkl
+          pop: true
+        - include: escape-char-2
 
   string-quoted:
     - match: \`
@@ -103,9 +174,7 @@ contexts:
         - match: \`
           scope: punctuation.definition.string.end.pkl
           pop: true
-        - include: string-interpolation
-        - include: escape_captures
-        - include: escaped-unicode-char
+        - include: escape-char-0
 
   all:
     - match: ([_\w]+)\s*([=:{])
