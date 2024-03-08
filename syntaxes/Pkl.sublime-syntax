@@ -14,22 +14,26 @@ variables:
 
   variable: '(?:[\p{L}_$][\p{L}0-9_$]*)' # can't start with a number
   baseType: '(?:{{variable}}\s*(?:<[^>]*>)?\s*(?:\([^)]*\))?\s*\??)' # eg: Listing<Mapping>(something)?
-  type: '(?:{{baseType}}\s*(\|\s*{{baseType}})*' # eg: Listing<Float>|Mapping<Int>?|Duration
+  type: '(?:{{baseType}}\s*(\|\s*{{baseType}})*)' # eg: Listing<Float>|Mapping<Int>?|Duration
 
 contexts:
   main:
-    - include: comments
+    - include: module
+    - include: typealias
+    - include: variableDecl
+    - include: variableDeclType
+    - include: genericTypeMatch
+    - include: forPattern
+    - include: method
+    - include: class
     - include: strings
     - include: keyword
-    - include: class
     - include: literal
     - include: number
-    - include: built-in
     - include: super
     - include: type
     - include: operator
-    - include: method
-    - include: all
+    - include: comments
 
   comments:
     - include: comment-single-line
@@ -59,7 +63,7 @@ contexts:
       pop: true
 
   escaped-unicode-char:
-    - match: 'u\{\h{1,6}\}'
+    - match: 'u\{[\da-fA-F]{1,6}\}'
       scope: constant.character.escape.unicode.pkl
       pop: true
 
@@ -175,12 +179,6 @@ contexts:
           pop: true
         - include: escape-char-0
 
-  all:
-    - match: ([_\w]+)\s*(?=[=:{])
-      captures:
-        0: meta.pkl
-        1: variable.pkl
-
   number:
     - match: '
       \b(?:
@@ -198,10 +196,6 @@ contexts:
       scope: constant.numeric.integer.octal.pkl
     - match: \b{{digits}}
       scope: constant.numeric.integer.decimal.pkl
-
-  built-in:
-    - match: \b(JsonRenderer|YamlRenderer)\b
-      scope: support.class.pkl
 
   operator:
     - match: '\|>|\?\?|!!|\->|\|'
@@ -248,7 +242,7 @@ contexts:
       scope: constant.language.infinity.pkl
 
   super:
-    - match: \@(\w+)
+    - match: \@({{variable}})
       scope: keyword.pkl
 
   type:
@@ -258,29 +252,72 @@ contexts:
       scope: storage.type.pkl
 
   keyword:
-    - match: \b(let|function|protected|override|record|delete|match|vararg)\b
+    - match: \b(|protected|override|record|delete|match|case|vararg|const)\b
+      scope: keyword.other.pkl
+    - match: '\b(amends|as|extends|function|is|let|read|read\\?|import|import\*|throw|trace)\b'
       scope: keyword.pkl
-    - match: \b(if|else|for|when|switch|case)\b
+    - match: \b(if|else|for|when)\b
       scope: keyword.control.conditional.pkl
-    - match: \b(import|new)\b
-      scope: keyword.control.import.pkl
-    - match: \b(is|as|in)\b
-      scope: keyword.import.from.pkl
     - match: \b(hidden|local|abstract|external|open|in|out|amends|extends|fixed)\b
       scope: storage.modifier.pkl
     - match: \b(class|typealias)\b
       scope: keyword.declaration.class.pkl
     - match: \b(this|module|outer|super)\b
-      scope: variable.language.pkl
+      scope: variable.language.pkl keyword.pkl
 
+  module:
+    - match: '(?:(module)\s+({{variable}}(?:\.{{variable}}))?)'
+      captures:
+        0: meta.module.pkl
+        1: variable.language.pkl
+        2: variable.other.module.pkl
+
+  typealias:
+    - match: '(typealias)\s+({{variable}})\s*(=)\s*({{type}})'
+      captures:
+        0: meta.typealias.pkl
+        1: keyword.declaration.class.pkl
+        2: entity.name.type.pkl
+        3: keyword.operator.assignment.pkl
+        4: entity.name.type.pkl
+
+  variableDecl:
+    - match: '(\b{{variable}}|`[^`]+`)\s*(=)(?!=)'
+      captures:
+        0: meta.variable.declaration.pkl
+        1: variable.other.property.pkl
+        2: keyword.operator.assignment.pkl
+
+  variableDeclType:
+    - match: '(\b{{variable}}|`[^`]+`)\s*(:)\s*({{type}})'
+      captures:
+        0: meta.variable.declaration.pkl
+        1: variable.other.property.pkl
+        2: punctuation.separator.pkl
+        3: entity.name.type.pkl
+
+  genericTypeMatch:
+    - match: '(:)\s*({{type}})'
+      captures:
+        0: meta.annotation.identifier.pkl
+        1: punctuation.separator.pkl
+        2: entity.name.type.pkl
+
+  forPattern:
+    - match: '\b(for)\s*\(({{variable}})(?:\s*,\s*({{variable}}))*\s+(in)'
+      captures:
+        0: meta.block.for.pkl
+        1: keyword.control.loop.for.pkl
+        2: variable.other.property.pkl
+        3: variable.other.property.pkl
+        4: storage.modifier.pkl
   method:
-    - match: '^(?:(const|))(?:(function|))\s+([A-Za-z0-9]{1,}(\(\)){1})'
+    - match: '\b(function)\s+({{variable}})\(([^)]*)\)'
       captures:
         0: meta.function.pkl
-        1: storage.modifier.pkl
-        2: keyword.pkl
-        3: entity.name.function.pkl
-        4: punctuation.section.parens.begin.pkl
+        1: keyword.pkl
+        2: entity.name.function.pkl
+        3: meta.function.parameters.pkl
 
   class:
     - match: '^(?:(open|))\s*(class)?\s+([A-Za-z0-9]{1,})(?:\s*(extends|))(?:\s*([A-Za-z0-9]{1,}|)):?$\n?'
@@ -291,3 +328,9 @@ contexts:
         3: support.class.pkl
         4: keyword
         5: support.class.pkl
+
+# TODO:
+#   -better matching for union types
+#   -Type constraints not marked as type?
+#   -class declaration patter matcher
+#   -lambda pattern matcher
