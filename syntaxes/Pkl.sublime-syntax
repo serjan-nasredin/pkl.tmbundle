@@ -11,7 +11,6 @@ variables:
 contexts:
   main:
     - include: comments
-    - include: custom-string-1
     - include: strings
     - include: keyword
     - include: class
@@ -29,26 +28,18 @@ contexts:
     - include: comment-multi-line
 
   comment-single-line:
-    - match: //
-      scope: punctuation.definition.comment.pkl
-      push:
-        - meta_scope: comment.line.pkl
-        - match: $\n?
-          pop: true
+    - match: //.*
+      scope: comment.line.pkl
 
   comment-multi-line:
-    - match: /\*
+    - match: '/\*'
       scope: punctuation.definition.comment.begin.pkl
       push:
-        - meta_scope: comment.block.pkl
-        - match: \*/
+        - meta_content_scope: comment.block.pkl
+        - match: '\*/'
           scope: punctuation.definition.comment.end.pkl
           pop: true
-        - match: '^\s*(\*)(?!/)'
-          captures:
-            0: punctuation.definition.comment.pkl
     - include: comment-error
-
   comment-error:
     - match: \*/
       scope: invalid.illegal.pkl
@@ -128,14 +119,14 @@ contexts:
         - include: escape-char-1
 
   string-single-line-2:
-  - match: '##"'
-    scope: string.quoted.double.2.pkl punctuation.definition.string.begin.2.pkl
-    push:
-      - meta_content_scope: meta.string.pkl string.quoted.double.2.pkl
-      - match: '"##'
-        scope: punctuation.definition.string.end.2.pkl
-        pop: true
-      - include: escape-char-2
+    - match: '##"'
+      scope: string.quoted.double.2.pkl punctuation.definition.string.begin.2.pkl
+      push:
+        - meta_content_scope: meta.string.pkl string.quoted.double.2.pkl
+        - match: '"##'
+          scope: punctuation.definition.string.end.2.pkl
+          pop: true
+        - include: escape-char-2
 
   string-multi-line-0:
     - match: '(""")\s*?$' # content must start on a new line
@@ -243,7 +234,11 @@ contexts:
     - match: \b(true|false)\b
       scope: constant.language.boolean.pkl
     - match: \b(null)\b
+      scope: constant.language.null.pkl
+    - match: \b(NaN)\b
       scope: constant.language.nan.pkl
+    - match: \b(Infinity)\b
+      scope: constant.language.infinity.pkl
 
   super:
     - match: \@(\w+)

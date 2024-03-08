@@ -97,7 +97,11 @@ the species will be remembered.
 """
 
 bird = "Dodo"
-str = #" \\\\\ \#n \#u{12AF} \#(bird) """"" "#"
+str = #" \\\\\ \#n \#u{12AF} \#(bird) """"" "#
+str2 = ##" """"\\\\\ \# \##(bird) "##
+mstrig #"""
+  hello there \#(general_kenobi)
+"""#
 
 strLength = "dodo".length 
 reversedStr = "dodo".reverse() 
