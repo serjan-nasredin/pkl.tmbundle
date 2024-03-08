@@ -7,7 +7,15 @@ file_extensions: [pkl, pcf]
 scope: source.pkl
 
 variables:
-  escape-chars: '(?:\\|\\#|\\##|\\###|\\####|\\#####|\\######)'
+  digits: '(?:\d[\d_]*\d|\d)'
+  bits: '(?:[0-1][0-1_]*[0-1]|[0-1])'
+  octets: '(?:[0-7][0-7_]*[0-7]|[0-7])'
+  hexa: '(?:[\da-fA-F][\da-fA-F_]*[\da-fA-F]|[\da-fA-F_])'
+
+  variable: '(?:[\p{L}_$][\p{L}0-9_$]*)' # can't start with a number
+  baseType: '(?:{{variable}}\s*(?:<[^>]*>)?\s*(?:\([^)]*\))?\s*\??)' # eg: Listing<Mapping>(something)?
+  type: '(?:{{baseType}}\s*(\|\s*{{baseType}})*' # eg: Listing<Float>|Mapping<Int>?|Duration
+
 contexts:
   main:
     - include: comments
@@ -174,15 +182,21 @@ contexts:
         1: variable.pkl
 
   number:
-    - match: (?:(?:[-]?)(?:[0-9e]*)(?:\.{1}){1}(?:[0-9e]+))
-      scope: constant.numeric.float.decimal.pkl
-    - match: \b(?:0[xX])(?:[_0-9a-fA-F]+)
+    - match: '
+      \b(?:
+        {{digits}}?\.
+        {{digits}}(?:[eE][+-]?{{digits}})?
+        |
+        {{digits}}[eE][+-]?{{digits}}
+      )\b'
+      scope: constant.numeric.float.pkl
+    - match: \b(?:0[xX]){{hexa}}
       scope: constant.numeric.integer.hex.pkl
-    - match: \b(?:0[bB])(?:[_0-9a-fA-F]+)
+    - match: \b(?:0[bB]){{bits}}
       scope: constant.numeric.integer.binary.pkl
-    - match: \b(?:0[oO])(?:[_0-9a-fA-F]+)
+    - match: \b(?:0[oO]){{octets}}
       scope: constant.numeric.integer.octal.pkl
-    - match: \b(?:[-]?)(?:[0-9_]+)
+    - match: \b{{digits}}
       scope: constant.numeric.integer.decimal.pkl
 
   built-in:
@@ -204,14 +218,14 @@ contexts:
       scope: keyword.operator.logical
 
   punctuation:
-    - match: \.
-      scope: punctuation.delimiter.period.dot.pkl
+    - match: '\.\b'
+      scope: punctuation.accessor
     - match: \,
-      scope: punctuation.delimiter.comma.pkl
+      scope: punctuation.separator.comma.pkl
     - match: \;
-      scope: punctuation.definition.other.semicolon.pkl
+      scope: punctuation.terminator.semicolon.pkl
     - match: ':'
-      scope: punctuation.separator.key-value.colon.pkl
+      scope: punctuation.separator.colon.pkl
     - match: \(
       scope: punctuation.section.parens.begin.pkl
     - match: \)
@@ -222,14 +236,6 @@ contexts:
       scope: punctuation.section.brackets.end.pkl
     - match: \?
       scope: punctuation.definition.other.questionmark.pkl
-      # =
-      # <
-      # >
-      # /
-      # +
-      # {
-      # }
-      # ->
 
   literal:
     - match: \b(true|false)\b
@@ -256,14 +262,16 @@ contexts:
       scope: keyword.pkl
     - match: \b(if|else|for|when|switch|case)\b
       scope: keyword.control.conditional.pkl
-    - match: \b(import|module|new)\b
+    - match: \b(import|new)\b
       scope: keyword.control.import.pkl
     - match: \b(is|as|in)\b
       scope: keyword.import.from.pkl
     - match: \b(hidden|local|abstract|external|open|in|out|amends|extends|fixed)\b
       scope: storage.modifier.pkl
-    - match: \b(class)\b
-      scope: keyword.pkl
+    - match: \b(class|typealias)\b
+      scope: keyword.declaration.class.pkl
+    - match: \b(this|module|outer|super)\b
+      scope: variable.language.pkl
 
   method:
     - match: '^(?:(const|))(?:(function|))\s+([A-Za-z0-9]{1,}(\(\)){1})'
