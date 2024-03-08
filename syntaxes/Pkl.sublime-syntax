@@ -172,7 +172,6 @@ contexts:
       captures:
         0: meta.pkl
         1: variable.pkl
-        2: keyword.operator.assignment
 
   number:
     - match: (?:(?:[-]?)(?:[0-9e]*)(?:\.{1}){1}(?:[0-9e]+))
@@ -191,16 +190,18 @@ contexts:
       scope: support.class.pkl
 
   operator:
-    - match: '(==|<|>|<=|>=)'
+    - match: '\|>|\?\?|!!|\->|\|'
+      scope: keyword.operator.pkl
+    - match: '(==|!=|<=|>=|>|<)'
       scope: keyword.operator.comparison
-    - match: '([+*/%-:&|^]|<<|>>>?)='
+    - match: '='
       scope: keyword.operator.assignment
-    - match: '[+*/%-]'
+    - match: '(\*\*|[+\-*\/%]|~\/)'
       scope: keyword.operator.arithmetic
-    - match: '\!|\&\&|\|\|'
-      scope: keyword.operator.logical
     - match: '[~&|^]|<<|>>>?'
       scope: keyword.operator.bitwise
+    - match: '\!|\&\&|\|\|'
+      scope: keyword.operator.logical
 
   punctuation:
     - match: \.

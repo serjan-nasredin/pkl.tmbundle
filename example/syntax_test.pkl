@@ -169,6 +169,7 @@ comparison2 = 5.mb < 3.kib
 comparison3 = 5.mb > 3.kib
 comparison4 = 5.mb <= 3.kib
 comparison5 = 5.mb >= 3.kib
+comparison6 = 5.mb != 3.kib
 
 res1 = 5.mb + 3.kib 
 res2 = 5.mb - 3.kib 
