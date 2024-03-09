@@ -26,6 +26,7 @@ contexts:
     - include: forPattern
     - include: method
     - include: class
+    - include: comments
     - include: strings
     - include: keyword
     - include: literal
@@ -33,7 +34,6 @@ contexts:
     - include: super
     - include: type
     - include: operator
-    - include: comments
 
   comments:
     - include: comment-single-line
@@ -180,21 +180,15 @@ contexts:
         - include: escape-char-0
 
   number:
-    - match: '
-      \b(?:
-        {{digits}}?\.
-        {{digits}}(?:[eE][+-]?{{digits}})?
-        |
-        {{digits}}[eE][+-]?{{digits}}
-      )\b'
+    - match: '(?:{{digits}}?\.{{digits}}(?:[eE][+-]?{{digits}})?|{{digits}}[eE][+-]?{{digits}})'
       scope: constant.numeric.float.pkl
-    - match: \b(?:0[xX]){{hexa}}
+    - match: '(?:0[xX]){{hexa}}'
       scope: constant.numeric.integer.hex.pkl
-    - match: \b(?:0[bB]){{bits}}
+    - match: '(?:0[bB]){{bits}}'
       scope: constant.numeric.integer.binary.pkl
-    - match: \b(?:0[oO]){{octets}}
+    - match: '(?:0[oO]){{octets}}'
       scope: constant.numeric.integer.octal.pkl
-    - match: \b{{digits}}
+    - match: '{{digits}}'
       scope: constant.numeric.integer.decimal.pkl
 
   operator:
