@@ -13,7 +13,8 @@ variables:
   hexa: '(?:[\da-fA-F][\da-fA-F_]*[\da-fA-F]|[\da-fA-F_])'
 
   variable: '(?:[\p{L}_$][\p{L}0-9_$]*)' # can't start with a number
-  baseType: '(?:{{variable}}\s*(?:<[^>]*>)?\s*(?:\([^)]*\))?\s*\??)' # eg: Listing<Mapping>(something)?
+  # baseType: '(?:{{variable}}\s*(?:<[^>]*>)?\s*(?:\([^)]*\))?\s*\??)' # eg: Listing<Mapping>(something)?
+  baseType: '(?:\*?{{variable}}\s*(?:<[^>]*>)?)' # eg: Listing<Mapping>(something)?
   type: '(?:{{baseType}}\s*(\|\s*{{baseType}})*)' # eg: Listing<Float>|Mapping<Int>?|Duration
 
 contexts:
@@ -24,7 +25,9 @@ contexts:
     - include: variableDeclType
     - include: genericTypeMatch
     - include: forPattern
-    - include: method
+    - include: newPattern
+    - include: functions
+    - include: lambda-function
     - include: class
     - include: comments
     - include: strings
@@ -52,17 +55,15 @@ contexts:
           scope: punctuation.definition.comment.end.pkl
           pop: true
     - include: comment-error
+
   comment-error:
     - match: \*/
       scope: invalid.illegal.pkl
-
 
   escaped-char:
     - match: '[\\"tnr]'
       scope: constant.character.escape.pkl
       pop: true
-
-  escaped-unicode-char:
     - match: 'u\{[\da-fA-F]{1,6}\}'
       scope: constant.character.escape.unicode.pkl
       pop: true
@@ -74,7 +75,7 @@ contexts:
         - meta_scope: meta.interpolation.pkl
         - match: \)
           scope: punctuation.section.interpolation.end.pkl
-          pop: 2 # pops both the ( and the {escape}
+          pop: 2 # pops both the ( and the {escape-char}
         - include: main
 
   escape-char-0:
@@ -83,7 +84,6 @@ contexts:
       push:
         - include: string-interpolation
         - include: escaped-char
-        - include: escaped-unicode-char
 
   escape-char-1:
     - match: '\\#'
@@ -91,7 +91,6 @@ contexts:
       push:
         - include: string-interpolation
         - include: escaped-char
-        - include: escaped-unicode-char
 
   escape-char-2:
     - match: '\\##'
@@ -99,7 +98,6 @@ contexts:
       push:
         - include: string-interpolation
         - include: escaped-char
-        - include: escaped-unicode-char
 
   strings:
     - include: string-quoted
@@ -159,6 +157,7 @@ contexts:
           scope: punctuation.definition.string.end.1.pkl
           pop: true
         - include: escape-char-1
+
   string-multi-line-2:
     - match: '(##""")\s*?$' # content must start on a new line
       scope: string.quoted.triple.2.pkl punctuation.definition.string.begin.2.pkl
@@ -240,24 +239,28 @@ contexts:
       scope: keyword.pkl
 
   type:
-    - match: \b(Int|String|Boolean|Float)\b
+    - match: \b(Int|String|Boolean|Float|Number|Any|Base)\b
       scope: storage.type.pkl
     - match: \b(UInt16|UInt8|UInt)\b
       scope: storage.type.pkl
+    - match: \b(Collection|List|Set|Map|Listing|Mapping)\b
+      scope: entity.name.type.pkl
 
   keyword:
     - match: \b(|protected|override|record|delete|match|case|vararg|const)\b
       scope: keyword.other.pkl
-    - match: '\b(amends|as|extends|function|is|let|read|read\\?|import|import\*|throw|trace)\b'
-      scope: keyword.pkl
+    - match: '\b(read\?|read\*|read|import\*)\b?'
+      scope: keyword.import.pkl
     - match: \b(if|else|for|when)\b
       scope: keyword.control.conditional.pkl
     - match: \b(hidden|local|abstract|external|open|in|out|amends|extends|fixed)\b
       scope: storage.modifier.pkl
     - match: \b(class|typealias)\b
       scope: keyword.declaration.class.pkl
+    - match: '\b(amends|as|extends|function|is|let|read|import|throw|trace)\b'
+      scope: keyword.pkl
     - match: \b(this|module|outer|super)\b
-      scope: variable.language.pkl keyword.pkl
+      scope: variable.language.pkl
 
   module:
     - match: '(?:(module)\s+({{variable}}(?:\.{{variable}}))?)'
@@ -276,7 +279,7 @@ contexts:
         4: entity.name.type.pkl
 
   variableDecl:
-    - match: '(\b{{variable}}|`[^`]+`)\s*(=)(?!=)'
+    - match: '(\b{{variable}}|`[^`]+`)\s*(?:(=)(?!=)|(?={))'
       captures:
         0: meta.variable.declaration.pkl
         1: variable.other.property.pkl
@@ -305,26 +308,32 @@ contexts:
         2: variable.other.property.pkl
         3: variable.other.property.pkl
         4: storage.modifier.pkl
-  method:
-    - match: '\b(function)\s+({{variable}})\(([^)]*)\)'
+
+  functions:
+    - match: '\b(function)\s+({{variable}})'
       captures:
         0: meta.function.pkl
         1: keyword.pkl
         2: entity.name.function.pkl
-        3: meta.function.parameters.pkl
+
+  lambda-function:
+    - match: '(\({{variable}}\))\s*\->\s*'
+      captures:
+        0: meta.function.anonymous.pkl
+        1: variable.other.pkl
 
   class:
-    - match: '^(?:(open|))\s*(class)?\s+([A-Za-z0-9]{1,})(?:\s*(extends|))(?:\s*([A-Za-z0-9]{1,}|)):?$\n?'
+    - match: '(open)?(class)\s+(\w+)(?:\s*(extends)\s+(\w+))?'
       captures:
         0: meta.class.pkl
-        1: keyword
+        1: keyword.other.pkl
         2: keyword.declaration.class.pkl
-        3: support.class.pkl
-        4: keyword
-        5: support.class.pkl
+        3: entity.name.class.pkl
+        4: keyword.pkl
+        5: support.type.pkl
 
-# TODO:
-#   -better matching for union types
-#   -Type constraints not marked as type?
-#   -class declaration patter matcher
-#   -lambda pattern matcher
+  newPattern:
+    - match: '\b(new)\s+({{variable}})?'
+      captures:
+        1: keyword.pkl
+        2: support.type.pkl
