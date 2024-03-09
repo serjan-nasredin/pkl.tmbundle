@@ -135,7 +135,7 @@ res8 = 5.min % 3
 res9 = 5.min ** 3     
 
 
-  result: 5.05.min
+result: 5.05.min
 result: 4.95.min
 result: 15.min
 result: 1.6666666666666667.min
@@ -199,8 +199,14 @@ xyKibibytes = (x + y).kib
 dodo {
   name = "Dodo"
   taxonomy { 
-    `class` = "Aves" 
+    `class` = new Bird {}
   }
+}
+
+pidgeon {
+  name = "hello"
+} {
+  extinct = false
 }
 
 tortoise = (dodo) { 
@@ -551,7 +557,8 @@ obj: Bird                      // = new Bird {}
 nullable: Bird?                // = Null(new Bird {}) 
 union: *Bird|String            // = new Bird {} 
 stringLiteral: "Pigeon"        // = "Pigeon" 
-nullish: Null                  // = null 
+nullish: Null                  // = null
+mixup: Set<String|*Uri, *UInt16|Bird>
 
 
 
