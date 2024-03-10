@@ -558,8 +558,7 @@ nullable: Bird?                // = Null(new Bird {})
 union: *Bird|String            // = new Bird {} 
 stringLiteral: "Pigeon"        // = "Pigeon" 
 nullish: Null                  // = null
-mixup: Set<String|*Uri, *UInt16|Bird>
-
+mixup: Set<String|*Uri, *UInt16|Bird>(this <= 9000)
 
 
 class Bird {
