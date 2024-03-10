@@ -17,6 +17,15 @@ variables:
   baseType: '(?:\*?{{ident}}\s*(?:<[^>]*>)?)' # eg: Listing<Mapping>
   type: '(?:{{baseType}}\s*(\|\s*{{baseType}})*)' # eg: Listing<Float>|Mapping<Int>?|Duration
 
+  stdlib_bas: |-
+    (?x:  # WIP
+      Regex|Undefined|TODO|IntSeq|getClass|toString|ifNonNull
+      |hasProperty|getProperty|toDynamic|toMap|relativePathTo
+      |xor|implies
+    )
+
+  duration_unit: (?:ns|us|ms|s|min|h|d)
+  data_size_unit: (?:b|kb|kib|mb|mib|gb|gib|tb|tib|pb|pib)
 contexts:
   main:
     - include: typealias
@@ -25,7 +34,7 @@ contexts:
     - include: isPattern
     - include: functions
     - include: lambda-function
-    - include: class
+    - include: classPattern
     - include: comments
     - include: strings
     - include: keyword
@@ -161,14 +170,19 @@ contexts:
   number:
     - match: '\b(?:{{digits}}?\.{{digits}}(?:[eE][+-]?{{digits}})?|{{digits}}[eE][+-]?{{digits}})\b'
       scope: constant.numeric.float.pkl
+      push: after-expression
     - match: '\b(?:0[xX]){{hexa}}\b'
       scope: constant.numeric.integer.hex.pkl
+      push: after-expression
     - match: '\b(?:0[bB]){{bits}}\b'
       scope: constant.numeric.integer.binary.pkl
+      push: after-expression
     - match: '\b(?:0[oO]){{octets}}\b'
       scope: constant.numeric.integer.octal.pkl
+      push: after-expression
     - match: '\b{{digits}}\b'
       scope: constant.numeric.integer.decimal.pkl
+      push: after-expression
 
   literal:
     - match: \b(true|false)\b
@@ -195,7 +209,7 @@ contexts:
       scope: keyword.operator.logical
 
   keyword:
-    - match: \b(|protected|override|record|delete|match|case|vararg|const)\b
+    - match: \b(protected|override|record|delete|match|case|vararg|const)\b
       scope: keyword.other.pkl
     - match: '\b(read\?|read\*|read|import\*)\b?'
       scope: keyword.import.pkl
@@ -259,14 +273,14 @@ contexts:
         - include: identifiers
 
   type:
-    - match: \b(Pair|Collection|List|Set|Map|Listing|Mapping)\b
+    - match: \b(Pair|Collection|List|Set|Map|Listing|Mapping|Dynamic)\b
       scope: storage.type.pkl
       push:
         - match: '(?=<)'
           push: generic-angles
         - match: ''
           pop: true
-    - match: \b(U?Int(?:8|16|32)?|String|Uri|Boolean|Float|Number)\b
+    - match: \b(U?Int(?:8|16|32)?|String|Uri|Char|Comparable|Boolean|Float|Number)\b
       scope: storage.type.pkl
     - match: \b(Any|nothing)\b
       scope: storage.type.class.pkl
@@ -342,7 +356,7 @@ contexts:
         0: meta.function.anonymous.pkl
         1: variable.other.pkl
 
-  class:
+  classPattern:
     - match: '(?:(open)\s+)?(class)\s+({{ident}})(?:\s*(extends)\s+({{ident}}))?'
       captures:
         0: meta.class.pkl
@@ -371,6 +385,12 @@ contexts:
     - match: (\.)(?={{ident}})
       scope: punctuation.accessor.dot.pkl
       push:
+        - match: '{{duration_unit}}'
+          scope: support.type.duration.pkl
+          push: after-expression
+        - match: '{{data_size_unit}}'
+          scope: support.type.data_size.pkl
+          push: after-expression
         - match: ''
           pop: true
     - match: \s*(:)\s*
