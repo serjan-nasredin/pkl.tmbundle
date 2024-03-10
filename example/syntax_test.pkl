@@ -509,9 +509,10 @@ test8 = derived is Derived
 test9 = derived is Base
 test10 = derived is Any
 
-test1 = email is String(contains("@")) 
+test1 = email is String(contains("@"))
 test2 = map is Map<Int, Base> 
 test3 = name is "Pigeon"|"Barn owl"|"Parrot"
+text4 = `quoted name` is Base
 
 birds {
   new { name = "Pigeon" }
@@ -647,7 +648,7 @@ updated = (environmentVariables) {
 `A Bird's First Flight Time` = 5.s
 
 `number` = 42 
-res1 = `number` 
+res1 = `number`.min
 res2 = number 
 
 /// An aviated animal going by the name of [bird](https://en.wikipedia.org/wiki/Bird).
@@ -658,7 +659,7 @@ module com.animals.Birds
 /// A bird living on Earth.
 ///
 /// Has [name] and [lifespan] properties and an [isOlderThan()] method.
-class Bird {
+class `class` {
   /// The name of this bird.
   name: String
 

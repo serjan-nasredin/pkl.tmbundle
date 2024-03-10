@@ -12,7 +12,9 @@ variables:
   octets: '(?:[0-7][0-7_]*[0-7]|[0-7])'
   hexa: '(?:[\da-fA-F][\da-fA-F_]*[\da-fA-F]|[\da-fA-F_])'
 
-  ident: '(?:[\p{L}_$][\p{L}0-9_$]*\b)' # can't start with a number
+  base_ident: '(?:[\p{L}_$][\p{L}0-9_$]*\b)' # can't start with a number
+  quoted_ident: '(?:`(?:{{base_ident}}\s*)+`)'
+  ident: '(?:{{base_ident}}|{{quoted_ident}})'
   # baseType: '(?:{{ident}}\s*(?:<[^>]*>)?\s*(?:\([^)]*\))?\s*\??)' # eg: Listing<Mapping>(something)?
   baseType: '(?:\*?{{ident}}\s*(?:<[^>]*>)?)' # eg: Listing<Mapping>
   type: '(?:{{baseType}}\s*(\|\s*{{baseType}})*)' # eg: Listing<Float>|Mapping<Int>?|Duration
@@ -26,23 +28,22 @@ variables:
 
   duration_unit: (?:ns|us|ms|s|min|h|d)
   data_size_unit: (?:b|kb|kib|mb|mib|gb|gib|tb|tib|pb|pib)
+
 contexts:
   main:
     - include: typealias
     - include: forPattern
-    - include: newPattern
     - include: isPattern
     - include: functions
     - include: lambda-function
-    - include: classPattern
+    - include: class-declaration
+    - include: object-declaration
     - include: comments
     - include: strings
     - include: keyword
-    - include: literal
-    - include: number
+    - include: constants
     - include: super
     - include: operator
-    - include: quoted-identifiers
     - include: identifiers
     - include: brackets
 
@@ -167,7 +168,7 @@ contexts:
           pop: true
         - include: escape-char-2
 
-  number:
+  constants:
     - match: '\b(?:{{digits}}?\.{{digits}}(?:[eE][+-]?{{digits}})?|{{digits}}[eE][+-]?{{digits}})\b'
       scope: constant.numeric.float.pkl
       push: after-expression
@@ -183,8 +184,6 @@ contexts:
     - match: '\b{{digits}}\b'
       scope: constant.numeric.integer.decimal.pkl
       push: after-expression
-
-  literal:
     - match: \b(true|false)\b
       scope: constant.language.boolean.pkl
     - match: \b(null)\b
@@ -226,61 +225,65 @@ contexts:
     - match: \b(this|outer|super)\b
       scope: variable.language.pkl
 
-  punctuation:
-    - match: \,
-      scope: punctuation.separator.comma.pkl
-    - match: \;
-      scope: punctuation.terminator.semicolon.pkl
-    - match: ':'
-      scope: punctuation.separator.colon.pkl
-    - match: \(
-      scope: punctuation.section.parens.begin.pkl
-    - match: \)
-      scope: punctuation.section.parens.end.pkl
-    - match: \[
-      scope: punctuation.section.brackets.begin.pkl
-    - match: \]
-      scope: punctuation.section.brackets.end.pkl
-    - match: \?
-      scope: punctuation.definition.other.questionmark.pkl
-
   super:
-    - match: \@({{ident}})
+    - match: \@({{base_ident}})
       scope: keyword.pkl
 
   identifiers:
-    - match: '({{ident}})\s*(?=`?{)'
-      scope: variable.other.object.pkl
-      push: after-expression
-    - match: '({{ident}})\s*(?=`?=\s*(?:new|\([^)]+\)\s*{))'
-      scope: variable.other.object.pkl
-      push: after-expression
-    - match: '({{ident}})\s*(?=`?=)'
-      scope: variable.other.property.pkl
-      push: after-expression
-    - match: '{{ident}}'
-      scope: meta.identifier.pkl
-      push: after-expression
-
-  quoted-identifiers:
     - match: '`'
       scope: punctuation.section.quoted.begin.pkl
       push:
-        - meta_content_scope: meta.quoted.pkl
+        - meta_content_scope: variable.other.quoted.pkl
         - match: '`'
           scope: punctuation.section.quoted.end.pkl
-          pop: true
-        - include: identifiers
+          set: after-expression
+    - match: '{{ident}}\s*(?==)'
+      scope: variable.other.property.pkl
+    - match: '{{ident}}\s*(?={)'
+      scope: variable.other.object.pkl
+    - match: '{{base_ident}}'
+      scope: variable.other.pkl
+      push: after-expression
+
+  class-declaration:
+    - match: '\b(open)\b'
+      scope: storage.modifier.pkl
+    - match: '\b(class)\s+({{ident}})(?:\s*(extends)\s+({{ident}}))?'
+      captures:
+        1: storage.type.class.pkl keyword.declaration.class.pkl
+        2: entity.name.class.pkl
+        3: storage.modifier.pkl
+        4: entity.name.class.pkl
+      push: class-block
+
+  class-block:
+    - match: '\{'
+      scope: punctuation.section.class.begin.pkl
+      set:
+        - meta_content_scope: meta.class.pkl
+        - match: '\}'
+          scope: punctuation.section.class.end.pkl
+          set: after-expression
+        - include: main
+    - match: ''
+      pop: true
+
+  object-declaration:
+    - match: '\b(new)\s+(?:(Dynamic)|({{ident}}))'
+      captures:
+        1: keyword.pkl
+        2: keyword.pkl
+        3: entity.name.class.pkl
 
   type:
-    - match: \b(Pair|Collection|List|Set|Map|Listing|Mapping|Dynamic)\b
+    - match: \b(Pair|Collection|List|Set|Map|Listing|Mapping)\b
       scope: storage.type.pkl
       push:
         - match: '(?=<)'
           push: generic-angles
         - match: ''
           pop: true
-    - match: \b(U?Int(?:8|16|32)?|String|Uri|Char|Comparable|Boolean|Float|Number)\b
+    - match: \b(U?Int(?:8|16|32)?|String|Uri|Char|Comparable|Boolean|Float|Number|Dynamic)\b
       scope: storage.type.pkl
     - match: \b(Any|nothing)\b
       scope: storage.type.class.pkl
@@ -299,7 +302,7 @@ contexts:
     - meta_content_scope: meta.type.constraint.pkl
     - match: '\)'
       scope: punctuation.section.parens.end.pkl
-      pop: true
+      set: after-expression
     - match: '\('
       scope: punctuation.section.parens.begin.pkl
       push: type-constraint-contents
@@ -313,7 +316,7 @@ contexts:
     - meta_content_scope: meta.generic.pkl
     - match: '>'
       scope: punctuation.definition.generic.end.pkl
-      pop: true
+      set: after-expression
     - match: '<'
       scope: punctuation.definition.generic.begin.pkl
       push: generic-angles-contents
@@ -351,26 +354,11 @@ contexts:
         2: entity.name.function.pkl
 
   lambda-function:
-    - match: '(\({{ident}}\))\s*\->\s*'
+    - match: '(\({{ident}}\))\s*(\->)\s*'
       captures:
         0: meta.function.anonymous.pkl
         1: variable.other.pkl
-
-  classPattern:
-    - match: '(?:(open)\s+)?(class)\s+({{ident}})(?:\s*(extends)\s+({{ident}}))?'
-      captures:
-        0: meta.class.pkl
-        1: storage.modifier.pkl keyword.other.pkl
-        2: storage.type.class.pkl keyword.declaration.class.pkl
-        3: entity.name.class.pkl
-        4: storage.modifier.pkl keyword.other.pkl
-        5: entity.name.type.pkl
-
-  newPattern:
-    - match: '\b(new)\s+({{ident}})?'
-      captures:
-        1: keyword.pkl
-        2: entity.name.type.pkl
+        2: keyword.operator.pkl
 
   isPattern:
     - match: '(`?)({{ident}})(`?)\s+(is)\s+'
@@ -414,3 +402,12 @@ contexts:
           scope: punctuation.section.brackets.end.pkl
           set: after-expression
         - include: main
+    - match: '\{'
+      scope: punctuation.section.block.begin.pkl
+      push:
+        - meta_content_scope: meta.block.pkl
+        - match: '\}'
+          scope: punctuation.section.block.end.pkl
+          set: after-expression
+        - include: main
+
