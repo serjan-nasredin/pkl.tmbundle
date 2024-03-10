@@ -35,6 +35,7 @@ contexts:
     - include: operator
     - include: quoted-identifiers
     - include: identifiers
+    - include: brackets
 
   comments:
     - match: //.*
@@ -269,7 +270,7 @@ contexts:
       scope: storage.type.pkl
     - match: \b(Any|nothing)\b
       scope: storage.type.class.pkl
-    - match: '{{ident}}\b'
+    - match: '\b{{ident}}\b'
       scope: entity.name.type.pkl
     - match: '\|'
       scope: punctuation.separator.sequence.pkl
@@ -306,11 +307,9 @@ contexts:
   generic-angles-contents:
     - match: '(?=>)'
       pop: true
-    - include: type
-    - include: generic-angles
     - match: '(,)\s*'
       scope: punctuation.separator.pkl
-      push: after-expression
+    - include: type
 
   typealias:
     - match: '(typealias)\s+({{ident}})\s*(=)\s*({{type}})'
@@ -379,3 +378,19 @@ contexts:
       push: type
     - match: ''
       pop: true
+
+  brackets:
+    - match: \(
+      scope: punctuation.section.parens.begin.pkl
+      push:
+        - match: \)
+          scope: punctuation.section.parens.end.pkl
+          set: after-expression
+        - include: main
+    - match: \[
+      scope: punctuation.section.brackets.begin.pkl
+      push:
+        - match: \]
+          scope: punctuation.section.brackets.end.pkl
+          set: after-expression
+        - include: main
