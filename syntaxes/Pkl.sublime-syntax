@@ -33,6 +33,7 @@ contexts:
   main:
     - include: typealias
     - include: isPattern
+    - include: asPattern
     - include: functions
     - include: lambda-function
     - include: class-declaration
@@ -408,12 +409,15 @@ contexts:
         2: keyword.operator.pkl
 
   isPattern:
-    - match: '(`?)({{ident}})(`?)\s+(is)\s+'
+    - match: '({{ident}})\s+(is)\s+'
       captures:
-        1: punctuation.section.quoted.begin.pkl
-        2: variable.other.pkl
-        3: punctuation.section.quoted.end.pkl
-        4: keyword.pkl
+        1: variable.other.pkl
+        2: keyword.pkl
+      push: type
+
+  asPattern:
+    - match: '(as)\s+'
+      scope: keyword.pkl
       push: type
 
   member-predicate:
