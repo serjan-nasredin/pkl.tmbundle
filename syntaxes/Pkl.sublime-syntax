@@ -32,7 +32,6 @@ variables:
 contexts:
   main:
     - include: typealias
-    - include: forPattern
     - include: isPattern
     - include: functions
     - include: lambda-function
@@ -337,14 +336,14 @@ contexts:
         3: keyword.operator.assignment.pkl
         4: entity.name.type.pkl
 
-  forPattern:
-    - match: '\b(for)\s*\(({{ident}})(?:\s*,\s*({{ident}}))*\s+(in)'
-      captures:
-        0: meta.block.for.pkl
-        1: keyword.control.loop.for.pkl
-        2: variable.other.property.pkl
-        3: variable.other.property.pkl
-        4: storage.modifier.pkl
+  # forPattern:
+  #   - match: '\b(for)\s*\(({{ident}})(?:\s*,\s*({{ident}}))*\s+(in)\s+({{ident}})\)'
+  #     captures:
+  #       1: keyword.control.loop.for.pkl
+  #       2: variable.other.pkl
+  #       3: variable.other.pkl
+  #       4: keyword.pkl
+  #       5: variable.other.pkl
 
   functions:
     - match: '\b(function)\s+({{ident}})'
