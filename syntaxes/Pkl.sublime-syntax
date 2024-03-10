@@ -368,6 +368,37 @@ contexts:
         0: meta.function.pkl
         1: keyword.pkl
         2: entity.name.function.pkl
+      push: function-proto
+
+  function-proto:
+    - match: \(
+      scope: punctuation.section.parens.begin.pkl
+      push:
+        - meta_content_scope: meta.function.parameters.pkl
+        - match: \)
+          scope: punctuation.section.parens.end.pkl
+          pop: true
+          set: after-expression
+        - include: main
+    - match: '='
+      scope: keyword.operator.assignment.pkl
+      set: function-body
+
+  function-body:
+    - meta_content_scope: meta.function.pkl
+    - match: '\n'
+      pop: true
+    - match: '\b(new)\s+(\{)'
+      captures:
+        1: keyword.pkl
+        2: punctuation.section.function.begin.pkl
+      push:
+      - match: '\}'
+        scope: punctuation.section.function.end.pkl
+        pop: true
+        set: after-expression
+      - include: main
+    - include: main
 
   lambda-function:
     - match: '(\({{ident}}\))\s*(\->)\s*'
