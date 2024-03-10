@@ -254,6 +254,7 @@ contexts:
         - match: '{{ident}}'
           scope: variable.other.key.pkl
         - include: strings
+        - include: constants
     - match: '{{ident}}\s*(?==)'
       scope: variable.other.property.pkl
     - match: '{{ident}}\s*(?={)'
