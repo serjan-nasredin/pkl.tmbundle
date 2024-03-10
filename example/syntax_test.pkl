@@ -581,6 +581,9 @@ parrot {
   when (isSinger) {
     hobby = "singing"
     idol = "Frank Sinatra"
+  } else {
+    hobby = "whistling"
+    idol = "Amadeus Mozart"
   }
 }
 

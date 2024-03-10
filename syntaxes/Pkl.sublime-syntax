@@ -37,12 +37,14 @@ contexts:
     - include: lambda-function
     - include: class-declaration
     - include: object-declaration
+    - include: member-predicate
     - include: comments
     - include: strings
     - include: keyword
     - include: constants
     - include: super
     - include: operator
+    - include: punctuation
     - include: identifiers
     - include: brackets
 
@@ -109,61 +111,61 @@ contexts:
 
   string-single-line-0:
     - match: '"'
-      scope: meta.string.pkl string.quoted.double.0.pkl punctuation.definition.string.begin.0.pkl
+      scope: string.quoted.double.0.pkl punctuation.definition.string.begin.0.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.double.0.pkl
+        - meta_content_scope: string.quoted.double.0.pkl
         - match: '"'
-          scope: meta.string.pkl string.quoted.double.0.pkl punctuation.definition.string.end.0.pkl
+          scope: string.quoted.double.0.pkl punctuation.definition.string.end.0.pkl
           pop: true
         - include: escape-char-0
 
   string-single-line-1:
     - match: '#"'
-      scope: meta.string.pkl string.quoted.double.1.pkl punctuation.definition.string.begin.1.pkl
+      scope: string.quoted.double.1.pkl punctuation.definition.string.begin.1.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.double.1.pkl
+        - meta_content_scope: string.quoted.double.1.pkl
         - match: '"#'
-          scope: meta.string.pkl string.quoted.double.1.pkl punctuation.definition.string.end.1.pkl
+          scope: string.quoted.double.1.pkl punctuation.definition.string.end.1.pkl
           pop: true
         - include: escape-char-1
 
   string-single-line-2:
     - match: '##"'
-      scope: meta.string.pkl string.quoted.double.2.pkl punctuation.definition.string.begin.2.pkl
+      scope: string.quoted.double.2.pkl punctuation.definition.string.begin.2.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.double.2.pkl
+        - meta_content_scope: string.quoted.double.2.pkl
         - match: '"##'
-          scope: meta.string.pkl string.quoted.double.2.pkl punctuation.definition.string.end.2.pkl
+          scope: string.quoted.double.2.pkl punctuation.definition.string.end.2.pkl
           pop: true
         - include: escape-char-2
 
   string-multi-line-0:
     - match: '(""")\s*?$' # content must start on a new line
-      scope: meta.string.pkl string.quoted.triple.0.pkl punctuation.definition.string.begin.0.pkl
+      scope: string.quoted.triple.0.pkl punctuation.definition.string.begin.0.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.triple.0.pkl
+        - meta_content_scope: string.quoted.triple.0.pkl
         - match: '^\s*?(""")' # closing delim must start on a new line
-          scope: meta.string.pkl string.quoted.triple.0.pkl punctuation.definition.string.end.0.pkl
+          scope: string.quoted.triple.0.pkl punctuation.definition.string.end.0.pkl
           pop: true
         - include: escape-char-0
 
   string-multi-line-1:
     - match: '(#""")\s*?$' # content must start on a new line
-      scope: meta.string.pkl string.quoted.triple.1.pkl punctuation.definition.string.begin.1.pkl
+      scope: string.quoted.triple.1.pkl punctuation.definition.string.begin.1.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.triple.1.pkl
+        - meta_content_scope: string.quoted.triple.1.pkl
         - match: '^\s*?("""#)' # closing delim must start on a new line
-          scope: meta.string.pkl string.quoted.triple.1.pkl punctuation.definition.string.end.1.pkl
+          scope: string.quoted.triple.1.pkl punctuation.definition.string.end.1.pkl
           pop: true
         - include: escape-char-1
 
   string-multi-line-2:
     - match: '(##""")\s*?$' # content must start on a new line
-      scope: meta.string.pkl string.quoted.triple.2.pkl punctuation.definition.string.begin.2.pkl
+      scope: string.quoted.triple.2.pkl punctuation.definition.string.begin.2.pkl
       push:
-        - meta_content_scope: meta.string.pkl string.quoted.triple.2.pkl
+        - meta_content_scope: string.quoted.triple.2.pkl
         - match: '^\s*?("""##)' # closing delim must start on a new line
-          scope: meta.string.pkl string.quoted.triple.2.pkl punctuation.definition.string.end.2.pkl
+          scope: string.quoted.triple.2.pkl punctuation.definition.string.end.2.pkl
           pop: true
         - include: escape-char-2
 
@@ -193,7 +195,7 @@ contexts:
       scope: constant.language.infinity.pkl
 
   operator:
-    - match: '\|>|\?\.|\?\?|!!|\->|\|'
+    - match: \.\.\.\?|\.\.\.|'\|>|\?\.|\?\?|!!|\->|\|'
       scope: keyword.operator.pkl
     - match: '(==|!=|<=|>=|>|<)'
       scope: keyword.operator.comparison
@@ -224,6 +226,11 @@ contexts:
     - match: \b(this|outer|super)\b
       scope: variable.language.pkl
 
+  punctuation:
+    - match: ';'
+      scope: punctuation.terminator.pkl
+
+
   super:
     - match: \@({{base_ident}})
       scope: keyword.pkl
@@ -236,6 +243,16 @@ contexts:
         - match: '`'
           scope: punctuation.section.quoted.end.pkl
           set: after-expression
+    - match: '\[(?!\[)'
+      scope: punctuation.section.brackets.begin.pkl
+      push:
+        - meta_content_scope: variable.other.entry.pkl
+        - match: '\]'
+          scope: punctuation.section.brackets.end.pkl
+          pop: true
+        - match: '{{ident}}'
+          scope: variable.other.key.pkl
+        - include: strings
     - match: '{{ident}}\s*(?==)'
       scope: variable.other.property.pkl
     - match: '{{ident}}\s*(?={)'
@@ -367,6 +384,16 @@ contexts:
         3: punctuation.section.quoted.end.pkl
         4: keyword.pkl
       push: type
+
+  member-predicate:
+    - match: '\[\['
+      scope: punctuation.section.group.begin.pkl
+      push:
+        - meta_content_scope: meta.member-predicate.pkl
+        - match: '\]\]'
+          scope: punctuation.section.group.end.pkl
+          pop: true
+        - include: main
 
   after-expression:
     - match: (\.)(?={{ident}})
