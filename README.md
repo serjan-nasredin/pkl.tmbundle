@@ -18,10 +18,15 @@ Make sure you've [PackageControl](https://packagecontrol.io/) installed, then op
 Alternatively, clone this repository into Sublime's Packages directory:
 
 ```sh
-$ git clone https://github.com/serjan-nasredin/pkl.tmbundle.git -b develop
+$ git clone https://github.com/serjan-nasredin/pkl.tmbundle.git
 $ cd pkl.tmbundle
 $ xcopy /y /o /e ".\pkl.tmbundle" "%AppData%\Sublime_Text_3\Packages\Pkl"
 ```
+### Contributors
+
+[![Serjan Nasredin][pic_sn]][git_sn]
+|:---:|
+| [Serjan Nasredin][git_sn] |
 
 ## Licensed Agreement of Author with Recipients
 
@@ -30,4 +35,7 @@ Contact with the [author](https://serjan-nasredin.is-a.dev/).
 
 
 <!-- External links: -->
+[pic_sn]: https://avatars.githubusercontent.com/u/67647968?v=4&s=200
+[git_sn]: https://github.com/serjan-nasredin
+
 [1]: https://pkl-lang.org/
