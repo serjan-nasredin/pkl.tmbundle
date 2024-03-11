@@ -80,7 +80,7 @@ res5 = true.implies(false)
 
 
 name = "Dodo"
-greeting = "Hi, \(name)!" 
+greeting = "Hi, \(name)!"
 
 x = 42
 str = "\(x + 2) plus \(x * 2) is \(0x80)" 
@@ -90,7 +90,6 @@ Although the Dodo is extinct,
 the species will be remembered.
 """
 
-
 bird = "Dodo"
 message = """
 Although the \(bird) is extinct,
@@ -98,7 +97,11 @@ the species will be remembered.
 """
 
 bird = "Dodo"
-str = #" \\\\\ \#n \#u{12AF} \#(bird) """"" "#"
+str = #" \\\\\ \#n \#u{12AF} \#(bird) """"" "#
+str2 = ##" """"\\\\\ \# \##(bird) "##
+mstrig #"""
+  hello there \#(general_kenobi)
+"""#
 
 strLength = "dodo".length 
 reversedStr = "dodo".reverse() 
@@ -132,7 +135,7 @@ res8 = 5.min % 3
 res9 = 5.min ** 3     
 
 
-  result: 5.05.min
+result: 5.05.min
 result: 4.95.min
 result: 15.min
 result: 1.6666666666666667.min
@@ -166,6 +169,7 @@ comparison2 = 5.mb < 3.kib
 comparison3 = 5.mb > 3.kib
 comparison4 = 5.mb <= 3.kib
 comparison5 = 5.mb >= 3.kib
+comparison6 = 5.mb != 3.kib
 
 res1 = 5.mb + 3.kib 
 res2 = 5.mb - 3.kib 
@@ -195,8 +199,14 @@ xyKibibytes = (x + y).kib
 dodo {
   name = "Dodo"
   taxonomy { 
-    `class` = "Aves" 
+    `class` = new Bird {}
   }
+}
+
+pidgeon {
+  name = "hello"
+} {
+  extinct = false
 }
 
 tortoise = (dodo) { 
@@ -499,9 +509,10 @@ test8 = derived is Derived
 test9 = derived is Base
 test10 = derived is Any
 
-test1 = email is String(contains("@")) 
+test1 = email is String(contains("@"))
 test2 = map is Map<Int, Base> 
 test3 = name is "Pigeon"|"Barn owl"|"Parrot"
+text4 = `quoted name` is Base
 
 birds {
   new { name = "Pigeon" }
@@ -547,8 +558,9 @@ obj: Bird                      // = new Bird {}
 nullable: Bird?                // = Null(new Bird {}) 
 union: *Bird|String            // = new Bird {} 
 stringLiteral: "Pigeon"        // = "Pigeon" 
-nullish: Null                  // = null 
-
+nullish: Null                  // = null
+mixup: Set<String|*Uri, *UInt16|Bird>(this <= 9000)
+nested: Listing<Mapping<String, Base>>
 
 
 class Bird {
@@ -569,6 +581,9 @@ parrot {
   when (isSinger) {
     hobby = "singing"
     idol = "Frank Sinatra"
+  } else {
+    hobby = "whistling"
+    idol = "Amadeus Mozart"
   }
 }
 
@@ -607,7 +622,7 @@ entries2 {
 elements1 { 1; 2 }
 
 elements2 {
-  ...elements1 
+  ...?elements1
 }
 
 properties1 {
@@ -636,7 +651,7 @@ updated = (environmentVariables) {
 `A Bird's First Flight Time` = 5.s
 
 `number` = 42 
-res1 = `number` 
+res1 = `number`.min
 res2 = number 
 
 /// An aviated animal going by the name of [bird](https://en.wikipedia.org/wiki/Bird).
@@ -647,7 +662,7 @@ module com.animals.Birds
 /// A bird living on Earth.
 ///
 /// Has [name] and [lifespan] properties and an [isOlderThan()] method.
-class Bird {
+class `class` {
   /// The name of this bird.
   name: String
 
