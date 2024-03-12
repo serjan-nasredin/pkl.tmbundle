@@ -24,9 +24,9 @@ $ xcopy /y /o /e ".\pkl.tmbundle" "%AppData%\Sublime_Text_3\Packages\Pkl"
 ```
 ### Contributors
 
-[![Serjan Nasredin][pic_sn]][git_sn]
-|:---:|
-| [Serjan Nasredin][git_sn] |
+| <a href="https://github.com/serjan-nasredin"><img width="200" src="https://avatars.githubusercontent.com/u/67647968?v=4&s=200" alt="Serjan Nasredin"/></a> | <a href="https://github.com/ghyatzo"><img width="200" src="https://avatars.githubusercontent.com/u/8601724?v=4&s=200" alt="Camillo Schenone"/></a> |
+|:---:|:---:|
+| [Serjan Nasredin][git_sn] | [Camillo Schenone][git_cs] |
 
 ## Licensed Agreement of Author with Recipients
 
@@ -35,7 +35,7 @@ Contact with the [author](https://serjan-nasredin.is-a.dev/).
 
 
 <!-- External links: -->
-[pic_sn]: https://avatars.githubusercontent.com/u/67647968?v=4&s=200
 [git_sn]: https://github.com/serjan-nasredin
+[git_cs]: https://github.com/ghyatzo
 
 [1]: https://pkl-lang.org/
