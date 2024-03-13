@@ -284,27 +284,27 @@ contexts:
     - match: '`'
       scope: punctuation.section.quoted.begin.pkl
       push:
-        - meta_content_scope: variable.other.quoted.pkl
+        - meta_content_scope: meta.quoted.pkl
         - match: '`'
           scope: punctuation.section.quoted.end.pkl
           set: after-expression
     - match: '\[(?!\[)'
       scope: punctuation.section.brackets.begin.pkl
       push:
-        - meta_content_scope: variable.other.entry.pkl
+        - meta_content_scope: meta.entry.pkl
         - match: '\]'
           scope: punctuation.section.brackets.end.pkl
           pop: true
         - match: '{{ident}}'
-          scope: variable.other.key.pkl
+          scope: meta.key.pkl
         - include: strings
         - include: constants
     - match: '{{ident}}\s*(?==)'
-      scope: variable.other.property.pkl
+      scope: meta.property.pkl
     - match: '{{ident}}\s*(?={)'
-      scope: variable.other.object.pkl
+      scope: meta.object.pkl
     - match: '{{base_ident}}'
-      scope: variable.other.pkl
+      scope: meta.name.pkl
       push: after-expression
 
   class-declaration:
@@ -522,7 +522,7 @@ contexts:
   isPattern:
     - match: '({{ident}})\s+(is)\s+'
       captures:
-        1: variable.other.pkl
+        1: meta.name.pkl
         2: keyword.pkl
       push: type
 
