@@ -700,6 +700,9 @@ class `class` {
 typealias Adult = Bird(lifespan >= 2)
 
 typealias StrangeString = String|Int
+
+typealias StringLiteral = "this"|"is"|"a"|"string"|"litteral"
+
 /// A common [Bird] found in large cities.
 pigeon: Bird = new {
   name = "Pigeon"
@@ -707,7 +710,7 @@ pigeon: Bird = new {
 }
 
 /// Creates a [Bird] with the given [_name] and lifespan `0`.
-function Infant(_name: String): Bird = new { name = _name; lifespan = 0 }
+function Infant(_name: String): Bird|String|Listing<Bird, Duration> = new { name = _name; lifespan = 0 }
 
 @Unlisted
 
