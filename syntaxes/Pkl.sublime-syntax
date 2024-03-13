@@ -347,30 +347,28 @@ contexts:
     - include: type
 
   typealias:
-    - match: '(typealias)\s+({{ident}})\s*(=)\s*({{type}})'
+    - match: '(typealias)\s+({{ident}})'
       captures:
         0: meta.typealias.pkl
         1: keyword.declaration.class.pkl
         2: entity.name.type.pkl
-        3: keyword.operator.assignment.pkl
-        4: entity.name.type.pkl
+      push: typealias-type
 
-  # forPattern:
-  #   - match: '\b(for)\s*\(({{ident}})(?:\s*,\s*({{ident}}))*\s+(in)\s+({{ident}})\)'
-  #     captures:
-  #       1: keyword.control.loop.for.pkl
-  #       2: variable.other.pkl
-  #       3: variable.other.pkl
-  #       4: keyword.pkl
-  #       5: variable.other.pkl
+  typealias-type:
+    - meta_scope: meta.typealias.pkl
+    - match: '=\s*'
+      scope: keyword.operator.assignment.pkl
+      push: type
+    - match: '(?=\S)'
+      pop: true
 
   functions:
-    - match: '\b(function)\s+({{ident}})'
+    - match: '\b(function)\s+({{ident}})\s*'
       captures:
         0: meta.function.pkl
         1: keyword.pkl
         2: entity.name.function.pkl
-      push: function-proto
+      push: [function-def, function-proto]
 
   function-proto:
     - match: \(
