@@ -376,6 +376,12 @@ contexts:
       scope: entity.name.type.pkl
     - match: '\s*\|\s*'
       scope: punctuation.separator.sequence.pkl
+    - match: '(?=")'
+      push:
+        - meta_content_scope: meta.type.string-literal.pkl
+        - include: string-single-line-0
+        - match: ''
+          pop: true
     - match: '\*'
       scope: punctuation.definition.annotation.pkl
     - match: '(?=\s*\()'
