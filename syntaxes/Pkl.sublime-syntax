@@ -117,7 +117,7 @@ contexts:
         - meta_content_scope: string.quoted.double.0.pkl
         - match: '"'
           scope: string.quoted.double.0.pkl punctuation.definition.string.end.0.pkl
-          pop: true
+          set: after-expression
         - include: escape-char-0
 
   string-single-line-1:
@@ -127,7 +127,7 @@ contexts:
         - meta_content_scope: string.quoted.double.1.pkl
         - match: '"#'
           scope: string.quoted.double.1.pkl punctuation.definition.string.end.1.pkl
-          pop: true
+          set: after-expression
         - include: escape-char-1
 
   string-single-line-2:
@@ -137,7 +137,7 @@ contexts:
         - meta_content_scope: string.quoted.double.2.pkl
         - match: '"##'
           scope: string.quoted.double.2.pkl punctuation.definition.string.end.2.pkl
-          pop: true
+          set: after-expression
         - include: escape-char-2
 
   string-multi-line-0:
@@ -147,7 +147,7 @@ contexts:
         - meta_content_scope: string.quoted.triple.0.pkl
         - match: '^\s*?(""")' # closing delim must start on a new line
           scope: string.quoted.triple.0.pkl punctuation.definition.string.end.0.pkl
-          pop: true
+          set: after-expression
         - include: escape-char-0
 
   string-multi-line-1:
@@ -157,7 +157,7 @@ contexts:
         - meta_content_scope: string.quoted.triple.1.pkl
         - match: '^\s*?("""#)' # closing delim must start on a new line
           scope: string.quoted.triple.1.pkl punctuation.definition.string.end.1.pkl
-          pop: true
+          set: after-expression
         - include: escape-char-1
 
   string-multi-line-2:
@@ -167,7 +167,7 @@ contexts:
         - meta_content_scope: string.quoted.triple.2.pkl
         - match: '^\s*?("""##)' # closing delim must start on a new line
           scope: string.quoted.triple.2.pkl punctuation.definition.string.end.2.pkl
-          pop: true
+          set: after-expression
         - include: escape-char-2
 
   constants:
