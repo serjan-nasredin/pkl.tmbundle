@@ -21,7 +21,7 @@ variables:
 
   # We let pkl do the heavy lifting
   # import "pkl:base"
-  # import "pkl:reflect"
+  # import "pkl:reflect" // Requires pkl v 0.26+ it's broken before.
   #
   # function getMethods(module_mirror): Set = module_mirror.classes.flatMap((k,v) -> Map(k, v.methods.keys)).fold(Set(), (S, k, v) -> S.add(v)).flatten()
   # function getProperties(module_mirror): Set = module_mirror.classes.flatMap((k,v) -> Map(k, v.properties.keys)).fold(Set(), (S, k, v) -> S.add(v)).flatten()
