@@ -382,18 +382,21 @@ contexts:
           pop: true
           set: after-expression
         - include: main
-    - match: '='
+    - match: '\s*(=)\s*'
       scope: keyword.operator.assignment.pkl
+      pop: true
+
+  function-def:
+    - meta_content_scope: meta.function.pkl
+    - match: '(?=new)'
+      set: [function-body, instantiation]
+    - match: ''
       set: function-body
 
   function-body:
-    - meta_content_scope: meta.function.pkl
-    - match: '\n'
-      pop: true
-    - match: '\b(new)\s+(\{)'
-      captures:
-        1: keyword.pkl
-        2: punctuation.section.function.begin.pkl
+    - meta_content_scope: meta.function.body.pkl
+    - match: '\{'
+      scope: punctuation.section.brackets.begin.pkl
       push:
       - match: '\}'
         scope: punctuation.section.function.end.pkl
@@ -401,13 +404,48 @@ contexts:
         set: after-expression
       - include: main
     - include: main
+    - match: '\n'
+      pop: true
 
   lambda-function:
-    - match: '(\({{ident}}\))\s*(\->)\s*'
-      captures:
-        0: meta.function.anonymous.pkl
-        1: variable.other.pkl
-        2: keyword.operator.pkl
+    - match: '(?=\((?:\s*[^()]\s*\,?)*\)\s*\->)'
+      push: [lambda-func-def, lambda-func-proto]
+
+  lambda-func-proto:
+    - match: '\('
+      scope: punctuation.section.parens.begin.pkl
+      push:
+        - meta_content_scope: meta.function.anonymous.parameters.pkl
+        - match: \)
+          scope: punctuation.section.parens.end.pkl
+          pop: true
+        - include: main
+    - match: '\s*\->\s*'
+      scope: keyword.operator.assignment.pkl
+      pop: true
+
+  lambda-func-def:
+    - meta_content_scope: meta.function.anonymous.pkl
+    - match: '(?=new)'
+      set: [lambda-func-body, instantiation]
+    - match: ''
+      set: lambda-func-body
+
+  lambda-func-body:
+    - meta_content_scope: meta.function.anonymous.body.pkl
+    - match: '\{'
+      scope: punctuation.section.brackets.begin.pkl
+      push:
+      - match: '\}'
+        scope: punctuation.section.function.end.pkl
+        pop: 2
+        set: after-expression
+      - include: main
+    - include: main
+    - match: '\n'
+      pop: true
+    - match: '(?=\S)'
+      pop: true
 
   isPattern:
     - match: '({{ident}})\s+(is)\s+'
