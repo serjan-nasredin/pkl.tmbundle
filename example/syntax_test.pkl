@@ -16,6 +16,12 @@ num3 = 0b00010111
 num4 = 0o755 
 
 
+const1 = math.e
+const2 = math.minInt
+const3 = math.pi
+const4 = math.maxUInt
+
+
 num1 = 1_000_000 
 num2 = 0x0134_64DE 
 num3 = 0b0001_0111 
@@ -252,7 +258,7 @@ pigeon = new Dynamic {
 class Bird {
   name: String
   lifespan: Int
-  hidden nameAndLifespanInIndex = "\(name), \(lifespan)" 
+  hidden nameAndLifespanInIndex = "\(name), \(1), \(lifespan)"
   nameSignWidth: UInt = nameAndLifespanInIndex.length 
 }
 
@@ -260,6 +266,13 @@ pigeon = new Bird {
   name = "Pigeon"
   lifespan = 8
 }
+
+pidgeon = new Int {}
+
+// error, can't isntantiate abstract or external classes }
+
+pidgeon = new Mixin {}
+
 
 pigeonInIndex = pigeon.nameAndLifespanInIndex 
 
@@ -313,6 +326,9 @@ class Parrot extends Pigeon {
 
   function say() = "Pkl is great!"   
 }
+
+// Can't extend non open classes
+class Test extends Deprecated {} //error
 
 module parrot
 
@@ -383,7 +399,7 @@ quota {
 output {
   renderer = new YamlRenderer {
     converters {
-      [DataSize] = (size) -> "\(size.value) \(size.unit)"
+      [DataSize] = (size) -> "\(size.value) asdsa \(size.unit)"
     }
   }
 }
@@ -518,11 +534,18 @@ birds {
   new { name = "Pigeon" }
   new { name = "Barn owl" }
 }
-names = birds.toList().map((it) -> it.name) as List<String>
+names = birds.toList().map((it: Int) -> it.name) as List<String>
+intnames = bird.toList().map((it: Int) -> getInt() + 3 + "i want to break free".toInt() )
+
+big_anon = (i: Int, j: String) -> new Dynamic {
+  result: String = j*i
+}.apply(3, "a")
+
+big_anon.apply(3, "a")
 
 class Bird {
   name: String 
-}
+}.toTyped
 bird: Bird
 
 
@@ -676,6 +699,10 @@ class `class` {
 /// An adult [Bird].
 typealias Adult = Bird(lifespan >= 2)
 
+typealias StrangeString = String|Int
+
+typealias StringLiteral = "this"|"is"|"a"|"string"|"litteral"
+
 /// A common [Bird] found in large cities.
 pigeon: Bird = new {
   name = "Pigeon"
@@ -683,7 +710,7 @@ pigeon: Bird = new {
 }
 
 /// Creates a [Bird] with the given [_name] and lifespan `0`.
-function Infant(_name: String): Bird = new { name = _name; lifespan = 0 }
+function Infant(_name: String): Bird|String|Listing<Bird, Duration> = new { name = _name; lifespan = 0 }
 
 @Unlisted
 
