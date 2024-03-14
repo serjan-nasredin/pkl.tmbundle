@@ -539,13 +539,13 @@ intnames = bird.toList().map((it: Int) -> getInt() + 3 + "i want to break free".
 
 big_anon = (i: Int, j: String) -> new Dynamic {
   result: String = j*i
-}.appy(3, "a")
+}.apply(3, "a")
 
 big_anon.apply(3, "a")
 
 class Bird {
   name: String 
-}
+}.toTyped
 bird: Bird
 
 

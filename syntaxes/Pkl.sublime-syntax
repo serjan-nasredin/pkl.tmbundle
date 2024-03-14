@@ -102,7 +102,7 @@ contexts:
       pop: true
 
   string-interpolation:
-    - match: \(
+    - match: \\#*\(
       scope: punctuation.section.interpolation.begin.pkl
       push:
         - clear_scopes: 1
@@ -113,23 +113,21 @@ contexts:
         - include: main
 
   escape-char-0:
-    - match: '\\(?=\()'
-      scope: punctuation.section.interpolation.begin.pkl
+    - match: '(?=\\\()'
       push: string-interpolation
     - match: '\\'
       scope: constant.character.escape.pkl
       push: escaped-char
 
   escape-char-1:
-    - match: '\\#(?=\()'
-      scope: punctuation.section.interpolation.begin.pkl
+    - match: '(?=\\#\()'
       push: string-interpolation
     - match: '\\#'
       scope: constant.character.escape.pkl
       push: escaped-char
 
   escape-char-2:
-    - match: '\\##(?=\()'
+    - match: '(?=\\##\()'
       scope: punctuation.section.interpolation.begin.pkl
       push: string-interpolation
     - match: '\\##'
@@ -248,7 +246,7 @@ contexts:
   keyword:
     - match: \b(protected|override|record|delete|match|case|vararg|const)\b
       scope: keyword.other.pkl
-    - match: '\b(read\?|read\*|read|import\*)\b?'
+    - match: '\b(read\?|read\*|read|import\*)\s*'
       scope: keyword.import.pkl
     - match: \b(if|else|when)\b
       scope: keyword.control.conditional.pkl
@@ -275,7 +273,7 @@ contexts:
     - match: '`'
       scope: punctuation.section.quoted.begin.pkl
       push:
-        - meta_content_scope: meta.quoted.pkl variable.other.pkl
+        - meta_scope: meta.quoted.pkl variable.other.pkl
         - match: '`'
           scope: punctuation.section.quoted.end.pkl
           set: after-expression
@@ -568,10 +566,12 @@ contexts:
         - include: main
     - match: '\{'
       scope: punctuation.section.block.begin.pkl
-      push:
-        - meta_content_scope: meta.block.pkl
-        - match: '\}'
-          scope: punctuation.section.block.end.pkl
-          set: after-expression
-        - include: main
+      push: block
 
+
+  block:
+    - meta_content_scope: meta.block.pkl
+    - match: '\}'
+      scope: punctuation.section.block.end.pkl
+      set: after-expression
+    - include: main
