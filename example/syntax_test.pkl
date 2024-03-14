@@ -258,7 +258,7 @@ pigeon = new Dynamic {
 class Bird {
   name: String
   lifespan: Int
-  hidden nameAndLifespanInIndex = "\(name), \(lifespan)" 
+  hidden nameAndLifespanInIndex = "\(name), \(1), \(lifespan)"
   nameSignWidth: UInt = nameAndLifespanInIndex.length 
 }
 

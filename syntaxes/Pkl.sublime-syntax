@@ -113,35 +113,50 @@ contexts:
         - include: main
 
   escape-char-0:
+    - match: '\\(?=\()'
+      scope: punctuation.section.interpolation.begin.pkl
+      push: string-interpolation
     - match: '\\'
       scope: constant.character.escape.pkl
-      push:
-        - include: string-interpolation
-        - include: escaped-char
+      push: escaped-char
 
   escape-char-1:
+    - match: '\\#(?=\()'
+      scope: punctuation.section.interpolation.begin.pkl
+      push: string-interpolation
     - match: '\\#'
       scope: constant.character.escape.pkl
-      push:
-        - include: string-interpolation
-        - include: escaped-char
+      push: escaped-char
 
   escape-char-2:
+    - match: '\\##(?=\()'
+      scope: punctuation.section.interpolation.begin.pkl
+      push: string-interpolation
     - match: '\\##'
       scope: constant.character.escape.pkl
-      push:
-        - include: string-interpolation
-        - include: escaped-char
+      push: escaped-char
 
   strings:
-    - include: string-multi-line-2
-    - include: string-single-line-2
-    - include: string-multi-line-1
-    - include: string-single-line-1
-    - include: string-multi-line-0
-    - include: string-single-line-0
+    - include: string-multi-line
+    - include: string-single-line
 
-  string-single-line-0:
+  string-single-line:
+    - match: '##"'
+      scope: string.quoted.double.2.pkl punctuation.definition.string.begin.2.pkl
+      push:
+        - meta_content_scope: string.quoted.double.2.pkl
+        - match: '"##'
+          scope: string.quoted.double.2.pkl punctuation.definition.string.end.2.pkl
+          set: after-expression
+        - include: escape-char-2
+    - match: '#"'
+      scope: string.quoted.double.1.pkl punctuation.definition.string.begin.1.pkl
+      push:
+        - meta_content_scope: string.quoted.double.1.pkl
+        - match: '"#'
+          scope: string.quoted.double.1.pkl punctuation.definition.string.end.1.pkl
+          set: after-expression
+        - include: escape-char-1
     - match: '"'
       scope: string.quoted.double.0.pkl punctuation.definition.string.begin.0.pkl
       push:
@@ -151,47 +166,7 @@ contexts:
           set: after-expression
         - include: escape-char-0
 
-  string-single-line-1:
-    - match: '#"'
-      scope: string.quoted.double.1.pkl punctuation.definition.string.begin.1.pkl
-      push:
-        - meta_content_scope: string.quoted.double.1.pkl
-        - match: '"#'
-          scope: string.quoted.double.1.pkl punctuation.definition.string.end.1.pkl
-          set: after-expression
-        - include: escape-char-1
-
-  string-single-line-2:
-    - match: '##"'
-      scope: string.quoted.double.2.pkl punctuation.definition.string.begin.2.pkl
-      push:
-        - meta_content_scope: string.quoted.double.2.pkl
-        - match: '"##'
-          scope: string.quoted.double.2.pkl punctuation.definition.string.end.2.pkl
-          set: after-expression
-        - include: escape-char-2
-
-  string-multi-line-0:
-    - match: '(""")\s*?$' # content must start on a new line
-      scope: string.quoted.triple.0.pkl punctuation.definition.string.begin.0.pkl
-      push:
-        - meta_content_scope: string.quoted.triple.0.pkl
-        - match: '^\s*?(""")' # closing delim must start on a new line
-          scope: string.quoted.triple.0.pkl punctuation.definition.string.end.0.pkl
-          set: after-expression
-        - include: escape-char-0
-
-  string-multi-line-1:
-    - match: '(#""")\s*?$' # content must start on a new line
-      scope: string.quoted.triple.1.pkl punctuation.definition.string.begin.1.pkl
-      push:
-        - meta_content_scope: string.quoted.triple.1.pkl
-        - match: '^\s*?("""#)' # closing delim must start on a new line
-          scope: string.quoted.triple.1.pkl punctuation.definition.string.end.1.pkl
-          set: after-expression
-        - include: escape-char-1
-
-  string-multi-line-2:
+  string-multi-line:
     - match: '(##""")\s*?$' # content must start on a new line
       scope: string.quoted.triple.2.pkl punctuation.definition.string.begin.2.pkl
       push:
@@ -200,6 +175,22 @@ contexts:
           scope: string.quoted.triple.2.pkl punctuation.definition.string.end.2.pkl
           set: after-expression
         - include: escape-char-2
+    - match: '(#""")\s*?$' # content must start on a new line
+      scope: string.quoted.triple.1.pkl punctuation.definition.string.begin.1.pkl
+      push:
+        - meta_content_scope: string.quoted.triple.1.pkl
+        - match: '^\s*?("""#)' # closing delim must start on a new line
+          scope: string.quoted.triple.1.pkl punctuation.definition.string.end.1.pkl
+          set: after-expression
+        - include: escape-char-1
+    - match: '(""")\s*?$' # content must start on a new line
+      scope: string.quoted.triple.0.pkl punctuation.definition.string.begin.0.pkl
+      push:
+        - meta_content_scope: string.quoted.triple.0.pkl
+        - match: '^\s*?(""")' # closing delim must start on a new line
+          scope: string.quoted.triple.0.pkl punctuation.definition.string.end.0.pkl
+          set: after-expression
+        - include: escape-char-0
 
   constants:
     - match: '\b(?:{{digits}}?\.{{digits}}(?:[eE][+-]?{{digits}})?|{{digits}}[eE][+-]?{{digits}})\b'
@@ -284,7 +275,7 @@ contexts:
     - match: '`'
       scope: punctuation.section.quoted.begin.pkl
       push:
-        - meta_content_scope: meta.quoted.pkl
+        - meta_content_scope: meta.quoted.pkl variable.other.pkl
         - match: '`'
           scope: punctuation.section.quoted.end.pkl
           set: after-expression
@@ -319,14 +310,14 @@ contexts:
   class-extends:
     - match: '\s+(extends)\s+'
       scope: storage.modifier.pkl
-      set:
+      push:
         - match: '\b{{pklbase_type_open}}'
           scope: storage.type.class.pkl
         - match: '\b(?:{{pklbase_type_external}}|{{pklbase_type_other}}|{{pklbase_type_abstract}}|{{pklbase_typealiases}})'
           scope: invalid.illegal.pkl
         - match: '\b{{ident}}\b'
           scope: entity.name.class.pkl
-        - match: '(?=\S)'
+        - match: ''
           pop: true
     - match: '(?=\S)'
       pop: true
@@ -348,9 +339,9 @@ contexts:
       scope: keyword.pkl
       set:
         - match: 'Mixin' # the only typealias that can be instantiated
-          scope: storage.type.class.pkl
+          scope: support.type.pkl
         - match: '(?:{{pklbase_type_other}}|{{pklbase_type_open}})'
-          scope: storage.type.class.pkl
+          scope: support.type.pkl
         - match: '(?:{{pklbase_type_external}}||{{pklbase_type_abstract}}|{{pklbase_typealiases}})'
           scope: invalid.illegal.pkl
         - match: '(?:{{ident}})'
@@ -360,16 +351,16 @@ contexts:
 
   type:
     - match: \b(Pair|Collection|List|Set|Map|Listing|Mapping)\b
-      scope: storage.type.class.pkl
+      scope: support.type.pkl
       push:
         - match: '(?=\s*<)'
           push: generic-angles
         - match: ''
           pop: true
     - match: '\b({{pklbase_types}})\b'
-      scope: storage.type.class.pkl
+      scope: support.type.pkl
     - match: '\b({{pklbase_typealiases}})\b'
-      scope: storage.type.enum.pkl
+      scope: support.type.enum.pkl
     - match: \b(nothing)\b
       scope: storage.type.class.pkl
     - match: '\b{{ident}}\b'
@@ -379,7 +370,7 @@ contexts:
     - match: '(?=")'
       push:
         - meta_content_scope: meta.type.string-literal.pkl
-        - include: string-single-line-0
+        - include: string-single-line
         - match: ''
           pop: true
     - match: '\*'
