@@ -1,6 +1,7 @@
 %YAML 1.2
 ---
 # Syntax: sublimetext.com/docs/syntax.html
+# Documentation: pkl-lang.org/main/current/language-reference/index.html
 
 name: Pkl
 file_extensions: [pkl, pcf]
@@ -238,7 +239,7 @@ contexts:
     - match: '\bmath\.({{pklmath_functions}})\b'
       captures:
         1: support.function.pkl
-
+        
   stdblib-built-ins:
     - match: '{{pklbase_classes_methods}}'
       scope: support.function.pkl
@@ -246,7 +247,7 @@ contexts:
   keyword:
     - match: \b(protected|override|record|delete|match|case|vararg|const)\b
       scope: keyword.other.pkl
-    - match: '\b(read\?|read\*|read|import\*)\s*'
+    - match: '\b(read[?*]?|import[*]?)\s*'
       scope: keyword.import.pkl
     - match: \b(if|else|when)\b
       scope: keyword.control.conditional.pkl
@@ -254,12 +255,12 @@ contexts:
       scope: keyword.control.loop.pkl
     - match: \b(hidden|local|abstract|external|open|in|out|amends|extends|fixed)\b
       scope: storage.modifier.pkl
-    - match: \b(class|typealias)\b
+    - match: \b(class|typealias|new)\b
       scope: storage.type.class.pkl keyword.declaration.class.pkl
     - match: '\b(amends|as|extends|function|is|let|read|import|throw|trace|module)\b'
       scope: keyword.pkl
     - match: \b(this|outer|super)\b
-      scope: variable.language.pkl
+      scope: support.function.built.pkl
 
   punctuation:
     - match: ';'
@@ -567,7 +568,6 @@ contexts:
     - match: '\{'
       scope: punctuation.section.block.begin.pkl
       push: block
-
 
   block:
     - meta_content_scope: meta.block.pkl
