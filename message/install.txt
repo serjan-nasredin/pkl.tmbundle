@@ -1,0 +1,53 @@
+
+               .:--.             :-:.              
+              -++++++-          :=+++++=.           
+              ++++++++=:.......-++++++++:           
+              =+++++++++++++++++++++++++.           
+              :+++++==-:::...:::-==++++=            
+             :+++=-......::::..... .-=++-           
+           .=++=:..::::::::::::::::. .:=++:         
+    ..:::::+++-.  ::::::::::::::::::.  .=++:......  
+   -+++++++++-    .:::::::::::::::::.   .-++++++++= 
+   +++++++++-. ......:::::::::::::......  -++++++++.
+  :+++++++++. .::::::...:::::::...::::::. .++++++++:
+    :-+++++=  ::::::::::.......::::::::::..+++++=-. 
+       .=++=  ::::::::::::. .::::::::::::..++=:     
+        :+++. .::::::::::::.::::::::::::. :++-      
+         +++=..::::::::::::.::::::::::::. =++.      
+         :+++-  .::::::::::.::::::::::...-++-       
+        :+++++-. .::::::::: :::::::::. .=++++:      
+      .=++++++++-...::::::. .:::::.. .-+++++++=.    
+      =+++++++++++=:.....     ... .:=++++++++++=    
+       -+++++++==++++=--:::::::--=+++==+++++++=     
+        .--:.     .-==++++++++++==-:    .:-=-.      
+                      =++++++++=                    
+                      :++++++++.                    
+                       =++++++=                 
+
+  Home Page: github.com/serjan-nasredin/pkl.tmbundle (BUG: /issues)
+  Reference: pkl-lang.org/main/current/language-reference/index.html
+                                                 P.s. Happy hacking!
+
+
+What's new in version 0.0.6?
+----------------------------
+- better function and lambdas parsing;
+- better typealias parsing;
+- scoped as meta.{property, object, entry, name}.pkl where name is the catchall value;
+- some fixes overall and added tests in the syntax file.
+
+Additionally, take a look at the change.log file: <github.com/serjan-nasredin/pkl.tmbundle/blob/main/change.log>.
+
+
+Pkl Syntax Highlighting for Sublime Text 3
+------------------------------------------
+This backlight took inspiration from the official Apple repository.
+And it is a more acceptable option to use for the general mass.
+
+
+Image License Agreement
+-----------------------
+I am not the author of the image, and I only use the icon for beauty.
+I took the original image from
+the official Apple's repository: <github.com/apple/pkl-vscode/blob/main/img/icon.png>.
+The image was generated using the <ascii-generator.site>.

@@ -1,0 +1,6 @@
+0.0.6
+-----
+- better function and lambdas parsing;
+- better typealias parsing;
+- scoped as meta.{property, object, entry, name}.pkl where name is the catchall value;
+- some fixes overall and added tests in the syntax file.
